@@ -5,25 +5,13 @@
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
 		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.0.xsd">
 
-	<http create-session="stateless" entry-point-ref="digestEntryPoint">
+	<http create-session="stateless">
 		<http-basic />
-
-		<custom-filter ref="digestFilter" after="BASIC_AUTH_FILTER" />
 	</http>
 	
 	<global-method-security secured-annotations="enabled" />
 
-	<beans:bean id="digestFilter" class="org.springframework.security.web.authentication.www.DigestAuthenticationFilter">
-		<beans:property name="userDetailsService" ref="myUserDetailsService" />
-		<beans:property name="authenticationEntryPoint" ref="digestEntryPoint" />
-	</beans:bean>
-
-	<beans:bean id="digestEntryPoint" class="org.springframework.security.web.authentication.www.DigestAuthenticationEntryPoint">
-		<beans:property name="realmName" value="Contacts Realm via Digest Authentication" />
-		<beans:property name="key" value="acegi" />
-	</beans:bean>
-
-	<authentication-manager erase-credentials="false">
+	<authentication-manager>
 		<authentication-provider user-service-ref="myUserDetailsService" />
 	</authentication-manager>
 

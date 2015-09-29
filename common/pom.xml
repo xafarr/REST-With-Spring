@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.baeldung</groupId>
 		<artifactId>user-management-parent</artifactId>
-		<version>0.1.2-SNAPSHOT</version>
+		<version>0.3.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 
@@ -128,11 +128,7 @@
 
 		<dependency>
 			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-config</artifactId>
+			<artifactId>spring-security-core</artifactId>
 		</dependency>
 
 		<!-- validation -->
