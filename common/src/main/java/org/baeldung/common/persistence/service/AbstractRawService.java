@@ -186,6 +186,7 @@ public abstract class AbstractRawService<T extends IEntity> implements IRawServi
     @Override
     public T create(final T entity) {
         Preconditions.checkNotNull(entity);
+        validateOnCreate(entity);
 
         eventPublisher.publishEvent(new BeforeEntityCreateEvent<T>(this, clazz, entity));
         final T persistedEntity = getDao().save(entity);
@@ -199,6 +200,7 @@ public abstract class AbstractRawService<T extends IEntity> implements IRawServi
     @Override
     public void update(final T entity) {
         Preconditions.checkNotNull(entity);
+        ServicePreconditions.checkEntityExists(findOne(entity.getId()), "Entity doesn't exist");
 
         eventPublisher.publishEvent(new BeforeEntityUpdateEvent<T>(this, clazz, entity));
         getDao().save(entity);
@@ -216,7 +218,7 @@ public abstract class AbstractRawService<T extends IEntity> implements IRawServi
     @Override
     public void delete(final long id) {
         final T entity = getDao().findOne(id);
-        ServicePreconditions.checkEntityExists(entity);
+        ServicePreconditions.checkEntityExists(entity, "Entity doesn't exist");
 
         eventPublisher.publishEvent(new BeforeEntityDeleteEvent<T>(this, clazz, entity));
         getDao().delete(entity);
@@ -249,6 +251,10 @@ public abstract class AbstractRawService<T extends IEntity> implements IRawServi
             sortInfo = new Sort(Direction.fromString(sortOrder), sortBy);
         }
         return sortInfo;
+    }
+
+    protected void validateOnCreate(final T entity) {
+        // to be overridden
     }
 
 }

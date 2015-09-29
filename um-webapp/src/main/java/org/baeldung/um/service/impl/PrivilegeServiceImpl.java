@@ -1,17 +1,16 @@
 package org.baeldung.um.service.impl;
 
-import org.apache.commons.lang3.tuple.Triple;
+import org.baeldung.common.persistence.ServicePreconditions;
 import org.baeldung.common.persistence.service.AbstractService;
-import org.baeldung.common.search.ClientOperation;
 import org.baeldung.um.persistence.dao.IPrivilegeJpaDao;
 import org.baeldung.um.persistence.model.Privilege;
-import org.baeldung.um.persistence.util.SearchUtilSec;
 import org.baeldung.um.service.IPrivilegeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.google.common.base.Preconditions;
 
 @Service
 @Transactional
@@ -29,8 +28,20 @@ public class PrivilegeServiceImpl extends AbstractService<Privilege>implements I
     // find
 
     @Override
-    public Privilege findByName(final String name) {
-        return getDao().findByName(name);
+    public Privilege findOneByName(final String name) {
+        return getDao().findOneByName(name);
+    }
+
+    // template
+
+    @Override
+    protected final void validateOnCreate(final Privilege entity) {
+        Preconditions.checkArgument(entity.getName() != null, "The name of the Privilege is required");
+        try {
+            ServicePreconditions.checkEntityState(getDao().findOneByName(entity.getName()) == null, "Privilege with the same name already exists: " + entity.getName());
+        } catch (final IllegalArgumentException iae) {
+            throw iae;
+        }
     }
 
     // Spring
@@ -38,11 +49,6 @@ public class PrivilegeServiceImpl extends AbstractService<Privilege>implements I
     @Override
     protected final IPrivilegeJpaDao getDao() {
         return dao;
-    }
-
-    @Override
-    public Specification<Privilege> resolveConstraint(final Triple<String, ClientOperation, String> constraint) {
-        return SearchUtilSec.resolveConstraint(constraint, Privilege.class);
     }
 
     @Override

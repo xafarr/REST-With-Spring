@@ -5,6 +5,6 @@ import org.baeldung.um.web.dto.UserDto;
 
 public interface IUserService extends IService<UserDto> {
 
-    UserDto getCurrentUser();
+    //
 
 }

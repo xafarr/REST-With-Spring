@@ -84,9 +84,13 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
     }
 
     final void createPrivilegeIfNotExisting(final String name) {
-        final Privilege entityByName = privilegeService.findByName(name);
+        createPrivilegeIfNotExisting(name, name);
+    }
+
+    final void createPrivilegeIfNotExisting(final String name, final String description) {
+        final Privilege entityByName = privilegeService.findOneByName(name);
         if (entityByName == null) {
-            final Privilege entity = new Privilege(name);
+            final Privilege entity = new Privilege(name, description);
             privilegeService.create(entity);
         }
     }
@@ -94,12 +98,12 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
     // Role
 
     private void createRoles() {
-        final Privilege canPrivilegeRead = privilegeService.findByName(Privileges.CAN_PRIVILEGE_READ);
-        final Privilege canPrivilegeWrite = privilegeService.findByName(Privileges.CAN_PRIVILEGE_WRITE);
-        final Privilege canRoleRead = privilegeService.findByName(Privileges.CAN_ROLE_READ);
-        final Privilege canRoleWrite = privilegeService.findByName(Privileges.CAN_ROLE_WRITE);
-        final Privilege canUserRead = privilegeService.findByName(Privileges.CAN_USER_READ);
-        final Privilege canUserWrite = privilegeService.findByName(Privileges.CAN_USER_WRITE);
+        final Privilege canPrivilegeRead = privilegeService.findOneByName(Privileges.CAN_PRIVILEGE_READ);
+        final Privilege canPrivilegeWrite = privilegeService.findOneByName(Privileges.CAN_PRIVILEGE_WRITE);
+        final Privilege canRoleRead = privilegeService.findOneByName(Privileges.CAN_ROLE_READ);
+        final Privilege canRoleWrite = privilegeService.findOneByName(Privileges.CAN_ROLE_WRITE);
+        final Privilege canUserRead = privilegeService.findOneByName(Privileges.CAN_USER_READ);
+        final Privilege canUserWrite = privilegeService.findOneByName(Privileges.CAN_USER_WRITE);
 
         Preconditions.checkNotNull(canPrivilegeRead);
         Preconditions.checkNotNull(canPrivilegeWrite);
@@ -112,7 +116,7 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
     }
 
     final void createRoleIfNotExisting(final String name, final Set<Privilege> privileges) {
-        final Role entityByName = roleService.findByName(name);
+        final Role entityByName = roleService.findOneByName(name);
         if (entityByName == null) {
             final Role entity = new Role(name);
             entity.setPrivileges(privileges);
@@ -123,14 +127,14 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
     // Principal/User
 
     final void createPrincipals() {
-        final Role roleAdmin = roleService.findByName(Roles.ROLE_ADMIN);
+        final Role roleAdmin = roleService.findOneByName(Roles.ROLE_ADMIN);
 
         // createPrincipalIfNotExisting(SecurityConstants.ADMIN_USERNAME, SecurityConstants.ADMIN_PASS, Sets.<Role> newHashSet(roleAdmin));
         createPrincipalIfNotExisting(Um.ADMIN_EMAIL, Um.ADMIN_PASS, Sets.<Role> newHashSet(roleAdmin));
     }
 
     final void createPrincipalIfNotExisting(final String loginName, final String pass, final Set<Role> roles) {
-        final Principal entityByName = principalService.findByName(loginName);
+        final Principal entityByName = principalService.findOneByName(loginName);
         if (entityByName == null) {
             final Principal entity = new Principal(loginName, pass, roles);
             principalService.create(entity);

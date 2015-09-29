@@ -7,8 +7,6 @@ import java.util.Set;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.baeldung.common.search.ClientOperation;
-import org.baeldung.common.util.QueryConstants;
-import org.baeldung.common.util.SearchField;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;

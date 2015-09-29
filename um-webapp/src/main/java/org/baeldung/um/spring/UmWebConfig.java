@@ -1,23 +1,22 @@
 package org.baeldung.um.spring;
 
 import java.util.List;
+import java.util.Optional;
 
-import org.baeldung.um.persistence.model.Principal;
-import org.baeldung.um.persistence.model.Privilege;
-import org.baeldung.um.persistence.model.Role;
-import org.baeldung.um.web.dto.UserDto;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.http.converter.xml.MarshallingHttpMessageConverter;
-import org.springframework.oxm.xstream.XStreamMarshaller;
-import org.springframework.util.ClassUtils;
+import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
 @Configuration
-@ComponentScan({ "org.baeldung.common.web", "org.baeldung.um.web" })
+@ComponentScan({ "org.baeldung.um.web", "org.baeldung.common.web" })
 @EnableWebMvc
 public class UmWebConfig extends WebMvcConfigurerAdapter {
 
@@ -25,40 +24,23 @@ public class UmWebConfig extends WebMvcConfigurerAdapter {
         super();
     }
 
-    // beans
-
-    public XStreamMarshaller xstreamMarshaller() {
-        final XStreamMarshaller xStreamMarshaller = new XStreamMarshaller();
-        xStreamMarshaller.setAutodetectAnnotations(true);
-        xStreamMarshaller.setAnnotatedClasses(new Class[] { Principal.class, UserDto.class, Role.class, Privilege.class });
-        xStreamMarshaller.getXStream().addDefaultImplementation(java.sql.Timestamp.class, java.util.Date.class);
-
-        return xStreamMarshaller;
-    }
-
-    public MarshallingHttpMessageConverter marshallingHttpMessageConverter() {
-        final MarshallingHttpMessageConverter marshallingHttpMessageConverter = new MarshallingHttpMessageConverter();
-        final XStreamMarshaller xstreamMarshaller = xstreamMarshaller();
-        marshallingHttpMessageConverter.setMarshaller(xstreamMarshaller);
-        marshallingHttpMessageConverter.setUnmarshaller(xstreamMarshaller);
-
-        return marshallingHttpMessageConverter;
-    }
-
-    // template
+    // configuration
 
     @Override
-    public void configureMessageConverters(final List<HttpMessageConverter<?>> messageConverters) {
-        messageConverters.add(marshallingHttpMessageConverter());
-
-        final ClassLoader classLoader = getClass().getClassLoader();
-        if (ClassUtils.isPresent("com.fasterxml.jackson.databind.ObjectMapper", classLoader)) {
-            messageConverters.add(new MappingJackson2HttpMessageConverter());
+    public void extendMessageConverters(final List<HttpMessageConverter<?>> converters) {
+        final Optional<HttpMessageConverter<?>> jsonConverterFound = converters.stream().filter(c -> c instanceof MappingJackson2HttpMessageConverter).findFirst();
+        if (jsonConverterFound.isPresent()) {
+            final AbstractJackson2HttpMessageConverter converter = (AbstractJackson2HttpMessageConverter) jsonConverterFound.get();
+            converter.getObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+            converter.getObjectMapper().enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         }
 
-        super.configureMessageConverters(messageConverters);
+        final Optional<HttpMessageConverter<?>> xmlConverterFound = converters.stream().filter(c -> c instanceof MappingJackson2XmlHttpMessageConverter).findFirst();
+        if (xmlConverterFound.isPresent()) {
+            final MappingJackson2XmlHttpMessageConverter converter = (MappingJackson2XmlHttpMessageConverter) xmlConverterFound.get();
+            converter.getObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+            converter.getObjectMapper().enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        }
     }
-
-    // https://github.com/joshlong/spring-travel/blob/master/spring-travel/server/src/main/java/org/springframework/samples/travel/config/web/WebConfiguration.java
 
 }

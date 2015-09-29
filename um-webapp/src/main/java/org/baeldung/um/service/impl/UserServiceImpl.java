@@ -81,8 +81,8 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserDto findByName(final String name) {
-        final Principal principal = principalService.findByName(name);
+    public UserDto findOneByName(final String name) {
+        final Principal principal = principalService.findOneByName(name);
         return new UserDto(principal);
     }
 
@@ -176,14 +176,6 @@ public class UserServiceImpl implements IUserService {
     @Override
     public long count() {
         return principalService.count();
-    }
-
-    // other
-
-    @Override
-    public UserDto getCurrentUser() {
-        final Principal principal = principalService.getCurrentPrincipal();
-        return new UserDto(principal);
     }
 
     // UTIL

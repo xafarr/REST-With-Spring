@@ -4,7 +4,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.baeldung.common.persistence.model.IEntity;
 import org.baeldung.common.web.RestPreconditions;
-import org.baeldung.common.web.events.AfterResourceCreatedEvent;
+import org.baeldung.common.web.event.AfterResourceCreatedEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -34,7 +34,7 @@ public abstract class AbstractController<T extends IEntity> extends AbstractRead
     protected final void updateInternal(final long id, final T resource) {
         RestPreconditions.checkRequestElementNotNull(resource);
         RestPreconditions.checkRequestElementNotNull(resource.getId());
-        RestPreconditions.checkRequestState(resource.getId() == id);
+        RestPreconditions.checkIfBadRequest(resource.getId() == id);
         RestPreconditions.checkNotNull(getService().findOne(resource.getId()));
 
         getService().update(resource);

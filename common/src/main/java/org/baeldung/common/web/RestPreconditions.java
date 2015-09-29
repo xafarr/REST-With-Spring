@@ -1,5 +1,6 @@
 package org.baeldung.common.web;
 
+import org.baeldung.common.web.exception.MyBadRequestException;
 import org.baeldung.common.web.exception.MyConflictException;
 import org.baeldung.common.web.exception.MyForbiddenException;
 import org.baeldung.common.web.exception.MyResourceNotFoundException;
@@ -18,7 +19,7 @@ public final class RestPreconditions {
 
     /**
      * Ensures that an object reference passed as a parameter to the calling method is not null.
-     * 
+     *
      * @param reference
      *            an object reference
      * @return the non-null reference that was validated
@@ -34,25 +35,28 @@ public final class RestPreconditions {
 
     /**
      * Ensures that an object reference passed as a parameter to the calling method is not null.
-     * 
+     *
      * @param reference
      *            an object reference
      * @return the non-null reference that was validated
-     * @throws MyConflictException
+     * @throws MyBadRequestException
      *             if {@code reference} is null
      */
     public static <T> T checkRequestElementNotNull(final T reference) {
         if (reference == null) {
-            throw new MyConflictException();
+            throw new MyBadRequestException();
         }
         return reference;
     }
 
     /**
      * Ensures the truth of an expression
-     * 
+     *
      * @param expression
      *            a boolean expression
+     *
+     * @throws MyConflictException
+     *             if {@code expression} is false
      */
     public static void checkRequestState(final boolean expression) {
         if (!expression) {
@@ -61,8 +65,23 @@ public final class RestPreconditions {
     }
 
     /**
+     * Ensures the truth of an expression related to the validity of the request
+     *
+     * @param expression
+     *            a boolean expression
+     *
+     * @throws MyBadRequestException
+     *             if {@code expression} is false
+     */
+    public static void checkIfBadRequest(final boolean expression) {
+        if (!expression) {
+            throw new MyBadRequestException();
+        }
+    }
+
+    /**
      * Check if some value was found, otherwise throw exception.
-     * 
+     *
      * @param expression
      *            has value true if found, otherwise false
      * @throws MyResourceNotFoundException
@@ -76,7 +95,7 @@ public final class RestPreconditions {
 
     /**
      * Check if some value was found, otherwise throw exception.
-     * 
+     *
      * @param expression
      *            has value true if found, otherwise false
      * @throws MyResourceNotFoundException
@@ -92,7 +111,7 @@ public final class RestPreconditions {
 
     /**
      * Check if some value was found, otherwise throw exception.
-     * 
+     *
      * @param expression
      *            has value true if found, otherwise false
      * @throws MyForbiddenException

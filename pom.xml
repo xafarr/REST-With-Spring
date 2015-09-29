@@ -3,7 +3,7 @@
 	
 	<groupId>org.baeldung</groupId>
 	<artifactId>user-management-parent</artifactId>
-	<version>0.1.2-SNAPSHOT</version>
+	<version>0.2.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>user-management-parent</name>
@@ -123,7 +123,7 @@
 		<javax.servlet-api.version>3.1.0</javax.servlet-api.version>
 
 		<!-- marshalling -->
-		<jackson.version>2.6.0</jackson.version>
+		<jackson.version>2.6.1</jackson.version>
 		<jaxb-api.version>2.2.12</jaxb-api.version>
 		<xstream.version>1.4.8</xstream.version>
 
@@ -175,11 +175,7 @@
 	</properties>
 
 	<modules>
-		<module>common-client</module>
 		<module>common</module>
-		<module>common-test</module>
-
-		<module>um-client</module>
 		<module>um-webapp</module>
 		
 	</modules>

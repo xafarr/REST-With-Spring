@@ -1,14 +1,10 @@
 package org.baeldung.um.service.impl;
 
-import org.apache.commons.lang3.tuple.Triple;
 import org.baeldung.common.persistence.service.AbstractService;
-import org.baeldung.common.search.ClientOperation;
 import org.baeldung.um.persistence.dao.IRoleJpaDao;
 import org.baeldung.um.persistence.model.Role;
-import org.baeldung.um.persistence.util.SearchUtilSec;
 import org.baeldung.um.service.IRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,8 +25,8 @@ public class RoleServiceImpl extends AbstractService<Role>implements IRoleServic
     // get/find
 
     @Override
-    public Role findByName(final String name) {
-        return getDao().findByName(name);
+    public Role findOneByName(final String name) {
+        return getDao().findOneByName(name);
     }
 
     // create
@@ -50,11 +46,6 @@ public class RoleServiceImpl extends AbstractService<Role>implements IRoleServic
     }
 
     // Spring
-
-    @Override
-    public Specification<Role> resolveConstraint(final Triple<String, ClientOperation, String> constraint) {
-        return SearchUtilSec.resolveConstraint(constraint, Role.class);
-    }
 
     @Override
     protected final IRoleJpaDao getDao() {
