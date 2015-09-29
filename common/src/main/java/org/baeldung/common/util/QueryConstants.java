@@ -2,14 +2,6 @@ package org.baeldung.common.util;
 
 public final class QueryConstants {
 
-    public static final String ID_NEG = SearchField.id.toString() + QueryConstants.NEGATION;
-    public static final String NAME_NEG = SearchField.name.toString() + QueryConstants.NEGATION;
-    public static final String LOGIN_NAME_NEG = SearchField.loginName.toString() + QueryConstants.NEGATION;
-    public static final String EMAIL_NEG = SearchField.email.toString() + QueryConstants.NEGATION;
-    public static final String TENANT_NEG = SearchField.tenant.toString() + QueryConstants.NEGATION;
-    public static final String LOCKED_NEG = SearchField.locked.toString() + QueryConstants.NEGATION;
-    public static final String DESCRIPTION_NEG = SearchField.description.toString() + QueryConstants.NEGATION;
-
     public static final String QUESTIONMARK = "?";
 
     public static final String PAGE = "page";

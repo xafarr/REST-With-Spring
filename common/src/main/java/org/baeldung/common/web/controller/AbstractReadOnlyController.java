@@ -11,9 +11,9 @@ import org.baeldung.common.persistence.service.IRawService;
 import org.baeldung.common.util.QueryConstants;
 import org.baeldung.common.web.RestPreconditions;
 import org.baeldung.common.web.WebConstants;
-import org.baeldung.common.web.events.MultipleResourcesRetrievedEvent;
-import org.baeldung.common.web.events.PaginatedResultsRetrievedEvent;
-import org.baeldung.common.web.events.SingleResourceRetrievedEvent;
+import org.baeldung.common.web.event.MultipleResourcesRetrievedEvent;
+import org.baeldung.common.web.event.PaginatedResultsRetrievedEvent;
+import org.baeldung.common.web.event.SingleResourceRetrievedEvent;
 import org.baeldung.common.web.exception.MyResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +23,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -44,16 +43,6 @@ public abstract class AbstractReadOnlyController<T extends IEntity> {
 
         Preconditions.checkNotNull(clazzToSet);
         clazz = clazzToSet;
-    }
-
-    // search
-
-    public List<T> searchAllInternal(@RequestParam(QueryConstants.Q_PARAM) final String queryString) {
-        return getService().searchAll(queryString);
-    }
-
-    public List<T> searchAllPaginatedInternal(@RequestParam(QueryConstants.Q_PARAM) final String queryString, final int page, final int size) {
-        return getService().searchPaginated(queryString, page, size);
     }
 
     // find - one

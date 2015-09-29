@@ -1,7 +1,6 @@
 package org.baeldung.um.persistence.setup;
 
 import org.baeldung.common.persistence.event.BeforeSetupEvent;
-import org.baeldung.um.web.controller.AuthenticationController;
 import org.baeldung.um.web.controller.PrivilegeController;
 import org.baeldung.um.web.controller.RoleController;
 import org.baeldung.um.web.controller.UserController;
@@ -32,7 +31,6 @@ public final class SpringVerificationsBeforeSetupListener implements Application
         Preconditions.checkNotNull(context.getBean(PrivilegeController.class));
         Preconditions.checkNotNull(context.getBean(RoleController.class));
         Preconditions.checkNotNull(context.getBean(UserController.class));
-        Preconditions.checkNotNull(context.getBean(AuthenticationController.class));
     }
 
 }

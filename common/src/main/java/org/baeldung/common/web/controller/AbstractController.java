@@ -4,7 +4,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.baeldung.common.persistence.model.IEntity;
 import org.baeldung.common.web.RestPreconditions;
-import org.baeldung.common.web.events.AfterResourceCreatedEvent;
+import org.baeldung.common.web.event.AfterResourceCreatedEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.util.UriComponentsBuilder;
 
