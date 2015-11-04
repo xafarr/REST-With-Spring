@@ -3,7 +3,7 @@ package org.baeldung.um.spring;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.boot.SpringApplication;
+import org.baeldung.um.persistence.setup.MyApplicationContextInitializer;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.embedded.ServletRegistrationBean;
@@ -44,11 +44,11 @@ public class UmApp extends SpringBootServletInitializer {
 
     @Override
     protected SpringApplicationBuilder configure(final SpringApplicationBuilder application) {
-        return application.sources(UmApp.class);
+        return application.initializers(new MyApplicationContextInitializer()).sources(UmApp.class);
     }
 
     public static void main(final String... args) {
-        SpringApplication.run(UmApp.class, args);
+        new SpringApplicationBuilder(UmApp.class).initializers(new MyApplicationContextInitializer()).run(args);
     }
 
 }
