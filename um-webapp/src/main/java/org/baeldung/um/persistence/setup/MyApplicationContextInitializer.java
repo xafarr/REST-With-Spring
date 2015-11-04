@@ -7,9 +7,13 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 
 public class MyApplicationContextInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
-    private final Logger logger = LoggerFactory.getLogger(MyApplicationContextInitializer.class);
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private static final String PERSISTENCE_TARGET = "persistenceTarget";
+
+    public MyApplicationContextInitializer() {
+        super();
+    }
 
     //
 

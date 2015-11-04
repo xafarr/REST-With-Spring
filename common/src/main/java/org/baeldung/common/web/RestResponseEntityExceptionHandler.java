@@ -8,7 +8,6 @@ import org.baeldung.common.web.exception.MyBadRequestException;
 import org.baeldung.common.web.exception.MyConflictException;
 import org.baeldung.common.web.exception.MyForbiddenException;
 import org.baeldung.common.web.exception.MyPreconditionFailedException;
-import org.baeldung.common.web.exception.MyResourceNotFoundException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
@@ -63,13 +62,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     // 404
 
     @ExceptionHandler({ MyEntityNotFoundException.class })
-    protected ResponseEntity<Object> handleNotFound(final RuntimeException ex, final WebRequest request) {
-        final String bodyOfResponse = "This should be application specific";
-        return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
-    }
-
-    @ExceptionHandler({ MyResourceNotFoundException.class })
-    public ResponseEntity<Object> handleNotFound(final MyResourceNotFoundException ex, final WebRequest request) {
+    protected ResponseEntity<Object> handleNotFound(final MyEntityNotFoundException ex, final WebRequest request) {
         final String bodyOfResponse = "This should be application specific";
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
