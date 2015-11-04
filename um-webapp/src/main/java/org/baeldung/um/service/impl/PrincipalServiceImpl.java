@@ -1,15 +1,11 @@
 package org.baeldung.um.service.impl;
 
-import org.apache.commons.lang3.tuple.Triple;
 import org.baeldung.common.persistence.service.AbstractService;
-import org.baeldung.common.search.ClientOperation;
 import org.baeldung.common.security.SpringSecurityUtil;
 import org.baeldung.um.persistence.dao.IPrincipalJpaDao;
 import org.baeldung.um.persistence.model.Principal;
-import org.baeldung.um.persistence.util.SearchUtilSec;
 import org.baeldung.um.service.IPrincipalService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,11 +45,6 @@ public class PrincipalServiceImpl extends AbstractService<Principal>implements I
     @Override
     protected final IPrincipalJpaDao getDao() {
         return dao;
-    }
-
-    @Override
-    public Specification<Principal> resolveConstraint(final Triple<String, ClientOperation, String> constraint) {
-        return SearchUtilSec.resolveConstraint(constraint, Principal.class);
     }
 
     @Override

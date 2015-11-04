@@ -59,6 +59,4 @@ public class UmWebConfig extends WebMvcConfigurerAdapter {
         super.configureMessageConverters(messageConverters);
     }
 
-    // https://github.com/joshlong/spring-travel/blob/master/spring-travel/server/src/main/java/org/springframework/samples/travel/config/web/WebConfiguration.java
-
 }
