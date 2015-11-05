@@ -11,13 +11,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class PrivilegeServiceImpl extends AbstractService<Privilege>implements IPrivilegeService {
+public class PrivilegeServiceImpl extends AbstractService<Privilege> implements IPrivilegeService {
 
     @Autowired
-    IPrivilegeJpaDao dao;
+    private IPrivilegeJpaDao dao;
 
     public PrivilegeServiceImpl() {
-        super(Privilege.class);
+        super();
     }
 
     // API

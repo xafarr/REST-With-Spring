@@ -2,7 +2,6 @@ package org.baeldung.um.persistence.setup;
 
 import java.util.Set;
 
-import org.baeldung.common.persistence.event.BeforeSetupEvent;
 import org.baeldung.common.spring.util.Profiles;
 import org.baeldung.um.persistence.model.Principal;
 import org.baeldung.um.persistence.model.Privilege;
@@ -16,7 +15,6 @@ import org.baeldung.um.util.Um.Roles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -25,6 +23,10 @@ import org.springframework.stereotype.Component;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 
+/**
+ * This simple setup class will run during the bootstrap process of Spring and will create some setup data <br>
+ * The main focus here is creating some standard privileges, then roles and finally some default principals/users
+ */
 @Component
 @Profile(Profiles.DEPLOYED)
 public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent> {
@@ -41,9 +43,6 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
     @Autowired
     private IPrivilegeService privilegeService;
 
-    @Autowired
-    private ApplicationContext eventPublisher;
-
     public SecuritySetup() {
         super();
     }
@@ -59,7 +58,6 @@ public class SecuritySetup implements ApplicationListener<ContextRefreshedEvent>
     public final void onApplicationEvent(final ContextRefreshedEvent event) {
         if (!setupDone) {
             logger.info("Executing Setup");
-            eventPublisher.publishEvent(new BeforeSetupEvent(this));
 
             createPrivileges();
             createRoles();
