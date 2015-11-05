@@ -12,13 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class PrincipalServiceImpl extends AbstractService<Principal>implements IPrincipalService {
+public class PrincipalServiceImpl extends AbstractService<Principal> implements IPrincipalService {
 
     @Autowired
-    IPrincipalJpaDao dao;
+    private IPrincipalJpaDao dao;
 
     public PrincipalServiceImpl() {
-        super(Principal.class);
+        super();
     }
 
     // API

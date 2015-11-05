@@ -14,10 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class RoleServiceImpl extends AbstractService<Role> implements IRoleService {
 
     @Autowired
-    IRoleJpaDao dao;
+    private IRoleJpaDao dao;
 
     public RoleServiceImpl() {
-        super(Role.class);
+        super();
     }
 
     // API

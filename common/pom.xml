@@ -181,7 +181,6 @@
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-jpa</artifactId>
-			<version>${spring-data-jpa.version}</version>
 		</dependency>
 
 		<dependency>
@@ -308,19 +307,6 @@
 		</resources>
 
 		<plugins>
-
-			<!-- <plugin> -->
-			<!-- <groupId>org.apache.maven.plugins</groupId> -->
-			<!-- <artifactId>maven-surefire-plugin</artifactId> -->
-			<!-- <configuration> -->
-			<!-- <excludes> -->
-			<!-- <exclude>**/*RestIntegrationTest.java</exclude> -->
-			<!-- </excludes> -->
-			<!-- <systemPropertyVariables> -->
-			<!-- <persistenceTarget>h2</persistenceTarget> -->
-			<!-- </systemPropertyVariables> -->
-			<!-- </configuration> -->
-			<!-- </plugin> -->
 
 		</plugins>
 
