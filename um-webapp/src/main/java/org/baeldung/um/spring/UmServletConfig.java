@@ -1,20 +1,22 @@
 package org.baeldung.um.spring;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.springframework.boot.context.embedded.FilterRegistrationBean;
+import org.baeldung.um.security.SimpleCorsFilter;
 import org.springframework.boot.context.embedded.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
-import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.DispatcherServlet;
 
 @Configuration
 public class UmServletConfig {
+
+    public UmServletConfig() {
+        super();
+    }
+
+    // beans
 
     @Bean
     public DispatcherServlet dispatcherServlet() {
@@ -36,15 +38,8 @@ public class UmServletConfig {
     }
 
     @Bean
-    @Order(1)
-    public FilterRegistrationBean springSecurityFilterChain() {
-        final FilterRegistrationBean filterRegBean = new FilterRegistrationBean();
-        final DelegatingFilterProxy delegatingFilterProxy = new DelegatingFilterProxy();
-        filterRegBean.setFilter(delegatingFilterProxy);
-        final List<String> urlPatterns = new ArrayList<String>();
-        urlPatterns.add("/*");
-        filterRegBean.setUrlPatterns(urlPatterns);
-        return filterRegBean;
+    public SimpleCorsFilter simpleCorsFilter() {
+        return new SimpleCorsFilter();
     }
 
 }

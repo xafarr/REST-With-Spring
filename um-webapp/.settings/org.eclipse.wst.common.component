@@ -4,10 +4,10 @@
         <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
-        <dependent-module archiveName="common-0.3.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/common/common">
+        <dependent-module archiveName="common-0.4.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/common/common">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="java-output-path" value="/rest/target/classes"/>
-        <property name="context-root" value="user-management-webapp"/>
+        <property name="context-root" value="um-webapp"/>
     </wb-module>
 </project-modules>

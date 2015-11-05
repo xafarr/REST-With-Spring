@@ -17,9 +17,10 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.InvalidMediaTypeException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.security.access.AccessDeniedException;
+import org.springframework.util.InvalidMimeTypeException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -70,21 +71,10 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         return handleExceptionInternal(ex, apiError, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
-    // 403
-
-    @ExceptionHandler({ AccessDeniedException.class })
-    public ResponseEntity<Object> handleEverything(final AccessDeniedException ex, final WebRequest request) {
-        logger.error("403 Status Code", ex);
-
-        final ApiError apiError = message(HttpStatus.FORBIDDEN, ex);
-
-        return handleExceptionInternal(ex, apiError, new HttpHeaders(), HttpStatus.FORBIDDEN, request);
-    }
-
     // 404
 
     @ExceptionHandler({ EntityNotFoundException.class, MyEntityNotFoundException.class, MyResourceNotFoundException.class })
-    protected ResponseEntity<Object> handleNotFound(final MyEntityNotFoundException ex, final WebRequest request) {
+    protected ResponseEntity<Object> handleNotFound(final RuntimeException ex, final WebRequest request) {
         log.warn("Not Found: {}", ex.getMessage());
 
         final ApiError apiError = message(HttpStatus.NOT_FOUND, ex);
@@ -99,6 +89,16 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 
         final ApiError apiError = message(HttpStatus.CONFLICT, ex);
         return handleExceptionInternal(ex, apiError, new HttpHeaders(), HttpStatus.CONFLICT, request);
+    }
+
+    // 415
+
+    @ExceptionHandler({ InvalidMimeTypeException.class, InvalidMediaTypeException.class })
+    protected ResponseEntity<Object> handleInvalidMimeTypeException(final IllegalArgumentException ex, final WebRequest request) {
+        log.warn("Unsupported Media Type: {}", ex.getMessage());
+
+        final ApiError apiError = message(HttpStatus.UNSUPPORTED_MEDIA_TYPE, ex);
+        return handleExceptionInternal(ex, apiError, new HttpHeaders(), HttpStatus.UNSUPPORTED_MEDIA_TYPE, request);
     }
 
     // 500

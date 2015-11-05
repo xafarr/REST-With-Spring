@@ -10,4 +10,6 @@ public abstract class AbstractService<T extends INameableEntity> extends Abstrac
 
     // API
 
+    // find - one
+
 }

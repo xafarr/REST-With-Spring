@@ -8,12 +8,16 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.http.HttpHeaders;
 import org.baeldung.common.persistence.model.IEntity;
 import org.baeldung.common.persistence.service.IRawService;
-import org.baeldung.common.util.QueryConstants;
 import org.baeldung.common.web.RestPreconditions;
 import org.baeldung.common.web.WebConstants;
+import org.baeldung.common.web.events.MultipleResourcesRetrievedEvent;
+import org.baeldung.common.web.events.PaginatedResultsRetrievedEvent;
+import org.baeldung.common.web.events.SingleResourceRetrievedEvent;
 import org.baeldung.common.web.exception.MyResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +34,9 @@ public abstract class AbstractReadOnlyController<T extends IEntity> {
 
     protected Class<T> clazz;
 
+    @Autowired
+    protected ApplicationEventPublisher eventPublisher;
+
     public AbstractReadOnlyController(final Class<T> clazzToSet) {
         super();
 
@@ -39,41 +46,50 @@ public abstract class AbstractReadOnlyController<T extends IEntity> {
 
     // find - one
 
+    protected final T findOneInternal(final Long id, final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
+        final T resource = findOneInternal(id);
+        eventPublisher.publishEvent(new SingleResourceRetrievedEvent<T>(clazz, uriBuilder, response));
+        return resource;
+    }
+
     protected final T findOneInternal(final Long id) {
         return RestPreconditions.checkNotNull(getService().findOne(id));
     }
 
     // find - all
 
-    protected final List<T> findAllInternal(final HttpServletRequest request) {
+    protected final List<T> findAllInternal(final HttpServletRequest request, final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
         if (request.getParameterNames().hasMoreElements()) {
             throw new MyResourceNotFoundException();
         }
 
+        eventPublisher.publishEvent(new MultipleResourcesRetrievedEvent<T>(clazz, uriBuilder, response));
         return getService().findAll();
     }
 
     protected final void findAllRedirectToPagination(final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
         final String resourceName = clazz.getSimpleName().toString().toLowerCase();
-        final String locationValue = uriBuilder.path(WebConstants.PATH_SEP + resourceName).build().encode().toUriString() + QueryConstants.QUESTIONMARK + "page=0&size=10";
+        final String locationValue = uriBuilder.path(WebConstants.PATH_SEP + resourceName).build().encode().toUriString() + "?" + "page=0&size=10";
 
         response.setHeader(HttpHeaders.LOCATION, locationValue);
     }
 
-    protected final List<T> findPaginatedAndSortedInternal(final int page, final int size, final String sortBy, final String sortOrder) {
+    protected final List<T> findPaginatedAndSortedInternal(final int page, final int size, final String sortBy, final String sortOrder, final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
         final Page<T> resultPage = getService().findAllPaginatedAndSortedRaw(page, size, sortBy, sortOrder);
         if (page > resultPage.getTotalPages()) {
             throw new MyResourceNotFoundException();
         }
+        eventPublisher.publishEvent(new PaginatedResultsRetrievedEvent<T>(clazz, uriBuilder, response, page, resultPage.getTotalPages(), size));
 
         return Lists.newArrayList(resultPage.getContent());
     }
 
-    protected final List<T> findPaginatedInternal(final int page, final int size, final String sortBy, final String sortOrder) {
+    protected final List<T> findPaginatedInternal(final int page, final int size, final String sortBy, final String sortOrder, final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
         final Page<T> resultPage = getService().findAllPaginatedAndSortedRaw(page, size, sortBy, sortOrder);
         if (page > resultPage.getTotalPages()) {
             throw new MyResourceNotFoundException();
         }
+        eventPublisher.publishEvent(new PaginatedResultsRetrievedEvent<T>(clazz, uriBuilder, response, page, resultPage.getTotalPages(), size));
 
         return Lists.newArrayList(resultPage.getContent());
     }

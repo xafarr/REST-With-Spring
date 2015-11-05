@@ -12,11 +12,19 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
+	<filter>
+		<filter-name>etagFilter</filter-name>
+		<filter-class>org.springframework.web.filter.ShallowEtagHeaderFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>etagFilter</filter-name>
+		<url-pattern>/api/*</url-pattern>
+	</filter-mapping>
+
 	<context-param>
 		<param-name>contextClass</param-name>
 		<param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
 	</context-param>
-
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
@@ -24,7 +32,6 @@
 			org.baeldung.client.spring
 		</param-value>
 	</context-param>
-
 	<context-param>
 		<param-name>spring.profiles.active</param-name>
 		<param-value>production</param-value>

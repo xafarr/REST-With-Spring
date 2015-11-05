@@ -6,13 +6,11 @@
 	<parent>
 		<groupId>org.baeldung</groupId>
 		<artifactId>user-management-parent</artifactId>
-		<version>0.3.0-SNAPSHOT</version>
+		<version>0.4.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 
 	<dependencies>
-
-		<!-- internal -->
 
 		<!-- util -->
 
@@ -124,13 +122,6 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- security -->
-
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-core</artifactId>
-		</dependency>
-
 		<!-- validation -->
 
 		<dependency>
@@ -162,12 +153,6 @@
 			<artifactId>jackson-databind</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>com.thoughtworks.xstream</groupId>
-			<artifactId>xstream</artifactId>
-			<version>${xstream.version}</version>
-		</dependency>
-
 		<!-- persistence -->
 
 		<dependency>
@@ -191,11 +176,6 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
 			<version>${hibernate.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.thoughtworks.xstream</groupId>
-			<artifactId>xstream-hibernate</artifactId>
-			<version>${xstream.version}</version>
 		</dependency>
 
 		<!-- proxying -->
@@ -307,6 +287,19 @@
 		</resources>
 
 		<plugins>
+
+			<!-- <plugin> -->
+			<!-- <groupId>org.apache.maven.plugins</groupId> -->
+			<!-- <artifactId>maven-surefire-plugin</artifactId> -->
+			<!-- <configuration> -->
+			<!-- <excludes> -->
+			<!-- <exclude>**/*RestIntegrationTest.java</exclude> -->
+			<!-- </excludes> -->
+			<!-- <systemPropertyVariables> -->
+			<!-- <persistenceTarget>h2</persistenceTarget> -->
+			<!-- </systemPropertyVariables> -->
+			<!-- </configuration> -->
+			<!-- </plugin> -->
 
 		</plugins>
 

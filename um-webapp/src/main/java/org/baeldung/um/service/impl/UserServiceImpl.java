@@ -133,14 +133,6 @@ public class UserServiceImpl implements IUserService {
         return principalService.count();
     }
 
-    // other
-
-    @Override
-    public UserDto getCurrentUser() {
-        final Principal principal = principalService.getCurrentPrincipal();
-        return new UserDto(principal);
-    }
-
     // UTIL
 
     private final UserDto convert(final Principal principal) {
