@@ -3,7 +3,6 @@ package org.baeldung.um.spring;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.baeldung.um.security.SimpleCorsFilter;
 import org.springframework.boot.context.embedded.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,11 +34,6 @@ public class UmServletConfig {
 
         registration.setLoadOnStartup(1);
         return registration;
-    }
-
-    @Bean
-    public SimpleCorsFilter simpleCorsFilter() {
-        return new SimpleCorsFilter();
     }
 
 }

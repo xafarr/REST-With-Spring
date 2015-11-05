@@ -32,8 +32,6 @@ public abstract class AbstractRawService<T extends IEntity> implements IRawServi
 
     // API
 
-    // search
-
     // find - one
 
     @Override

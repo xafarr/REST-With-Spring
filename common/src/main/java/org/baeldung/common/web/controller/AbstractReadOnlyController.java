@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.http.HttpHeaders;
 import org.baeldung.common.persistence.model.IEntity;
 import org.baeldung.common.persistence.service.IRawService;
+import org.baeldung.common.util.QueryConstants;
 import org.baeldung.common.web.RestPreconditions;
 import org.baeldung.common.web.WebConstants;
 import org.baeldung.common.web.events.MultipleResourcesRetrievedEvent;
@@ -53,7 +54,7 @@ public abstract class AbstractReadOnlyController<T extends IEntity> {
     }
 
     protected final T findOneInternal(final Long id) {
-        return RestPreconditions.checkNotNull(getService().findOne(id));
+        return RestPreconditions.checkFound(getService().findOne(id));
     }
 
     // find - all
@@ -69,7 +70,7 @@ public abstract class AbstractReadOnlyController<T extends IEntity> {
 
     protected final void findAllRedirectToPagination(final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
         final String resourceName = clazz.getSimpleName().toString().toLowerCase();
-        final String locationValue = uriBuilder.path(WebConstants.PATH_SEP + resourceName).build().encode().toUriString() + "?" + "page=0&size=10";
+        final String locationValue = uriBuilder.path(WebConstants.PATH_SEP + resourceName).build().encode().toUriString() + QueryConstants.QUESTIONMARK + "page=0&size=10";
 
         response.setHeader(HttpHeaders.LOCATION, locationValue);
     }

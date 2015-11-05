@@ -1,6 +1,7 @@
 package org.baeldung.um.service.impl;
 
 import org.baeldung.common.persistence.service.AbstractService;
+import org.baeldung.common.security.SpringSecurityUtil;
 import org.baeldung.um.persistence.dao.IPrincipalJpaDao;
 import org.baeldung.um.persistence.model.Principal;
 import org.baeldung.um.service.IPrincipalService;
@@ -28,6 +29,15 @@ public class PrincipalServiceImpl extends AbstractService<Principal> implements 
     @Transactional(readOnly = true)
     public Principal findByName(final String name) {
         return dao.findByName(name);
+    }
+
+    // other
+
+    @Override
+    @Transactional(readOnly = true)
+    public Principal getCurrentPrincipal() {
+        final String principalName = SpringSecurityUtil.getNameOfCurrentPrincipal();
+        return getDao().findByName(principalName);
     }
 
     // Spring

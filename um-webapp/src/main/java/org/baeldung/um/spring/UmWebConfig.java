@@ -16,4 +16,6 @@ public class UmWebConfig extends WebMvcConfigurerAdapter {
 
     // beans
 
+    // template
+
 }

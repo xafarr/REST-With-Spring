@@ -16,6 +16,8 @@ public final class UmMappings {
 
     }
 
+    public static final String AUTHENTICATION = "authentication";
+
     private UmMappings() {
         throw new AssertionError();
     }
