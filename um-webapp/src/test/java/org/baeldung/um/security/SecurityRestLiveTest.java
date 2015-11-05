@@ -6,7 +6,8 @@ import static org.baeldung.common.spring.util.Profiles.TEST;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.baeldung.um.client.template.UserRestClient;
+import org.baeldung.test.common.client.security.ITestAuthenticator;
+import org.baeldung.um.client.template.UserTestRestTemplate;
 import org.baeldung.um.model.UserDtoOpsImpl;
 import org.baeldung.um.spring.CommonTestConfig;
 import org.baeldung.um.spring.UmClientConfig;
@@ -20,7 +21,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
 import com.jayway.restassured.specification.RequestSpecification;
 
@@ -30,10 +30,13 @@ import com.jayway.restassured.specification.RequestSpecification;
 public class SecurityRestLiveTest {
 
     @Autowired
-    private UserRestClient userTemplate;
+    private UserTestRestTemplate userTemplate;
 
     @Autowired
     private UserDtoOpsImpl userOps;
+
+    @Autowired
+    private ITestAuthenticator auth;
 
     // tests
 
@@ -77,7 +80,7 @@ public class SecurityRestLiveTest {
     // util
 
     protected final RequestSpecification givenAuthenticated() {
-        return RestAssured.given().auth().preemptive().basic(Um.ADMIN_USERNAME, Um.ADMIN_PASS);
+        return auth.givenAuthenticated(Um.ADMIN_USERNAME, Um.ADMIN_PASS);
     }
 
 }

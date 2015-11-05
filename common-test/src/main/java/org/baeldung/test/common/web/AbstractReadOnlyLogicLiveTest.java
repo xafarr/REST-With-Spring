@@ -1,6 +1,5 @@
 package org.baeldung.test.common.web;
 
-import static com.jayway.restassured.RestAssured.get;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.apache.commons.lang3.RandomStringUtils.randomNumeric;
 import static org.baeldung.common.spring.util.Profiles.CLIENT;
@@ -39,15 +38,18 @@ public abstract class AbstractReadOnlyLogicLiveTest<T extends INameableDto> {
 
     @Test
     /*code*/public void givenResourceForIdDoesNotExist_whenResourceOfThatIdIsRetrieved_then404IsReceived() {
-        final Response response = getApi().findOneAsResponse(IDUtil.randomPositiveLong());
+        final Response response = getApi().findOneAsResponse(IDUtil.randomPositiveLong(), null);
 
         assertThat(response.getStatusCode(), is(404));
     }
 
     @Test
     /*code*/public void whenResourceIsRetrievedByNonNumericId_then400IsReceived() {
+        // Given id is non numeric
+        final String id = randomAlphabetic(6);
+
         // When
-        final Response res = getApi().findOneByUriAsResponse(getUri() + WebConstants.PATH_SEP + randomAlphabetic(6));
+        final Response res = getApi().findOneByUriAsResponse(getUri() + WebConstants.PATH_SEP + id, null);
 
         // Then
         assertThat(res.getStatusCode(), is(400));
@@ -58,7 +60,7 @@ public abstract class AbstractReadOnlyLogicLiveTest<T extends INameableDto> {
     @Test
     /*code*/public final void whenAllResourcesAreRetrieved_then200IsReceived() {
         // When
-        final Response response = getApi().findAllAsResponse();
+        final Response response = getApi().findAllAsResponse(null);
 
         // Then
         assertThat(response.getStatusCode(), is(200));
@@ -69,7 +71,7 @@ public abstract class AbstractReadOnlyLogicLiveTest<T extends INameableDto> {
     @Test
     /*code*/public final void whenResourcesAreRetrievedPaginated_then200IsReceived() {
         // When
-        final Response response = getApi().findAllPaginatedAsResponse(0, 1);
+        final Response response = getApi().findAllPaginatedAsResponse(0, 1, null);
 
         // Then
         assertThat(response.getStatusCode(), is(200));
@@ -79,7 +81,7 @@ public abstract class AbstractReadOnlyLogicLiveTest<T extends INameableDto> {
     // - note: may fail intermittently - TODO: investigate
     /*code*/public final void whenPageOfResourcesIsRetrievedOutOfBounds_then404IsReceived() {
         // When
-        final Response response = getApi().findAllPaginatedAsResponse(Integer.parseInt(randomNumeric(5)), 1);
+        final Response response = getApi().findAllPaginatedAsResponse(Integer.parseInt(randomNumeric(5)), 1, null);
 
         // Then
         assertThat(response.getStatusCode(), is(404));
@@ -88,7 +90,7 @@ public abstract class AbstractReadOnlyLogicLiveTest<T extends INameableDto> {
     @Test
     /*code*/public final void whenResourcesAreRetrievedWithNonNumericPage_then400IsReceived() {
         // When
-        final Response response = get(getUri() + "?page=" + randomAlphabetic(5).toLowerCase() + "&size=1");
+        final Response response = givenReadAuthenticated().get(getUri() + "?page=" + randomAlphabetic(5).toLowerCase() + "&size=1");
 
         // Then
         assertThat(response.getStatusCode(), is(400));
@@ -97,7 +99,7 @@ public abstract class AbstractReadOnlyLogicLiveTest<T extends INameableDto> {
     @Test
     /*code*/public final void whenResourcesAreRetrievedWithNonNumericPageSize_then400IsReceived() {
         // When
-        final Response response = get(getUri() + "?page=0" + "&size=" + randomAlphabetic(5));
+        final Response response = givenReadAuthenticated().get(getUri() + "?page=0" + "&size=" + randomAlphabetic(5));
 
         // Then
         assertThat(response.getStatusCode(), is(400));
@@ -107,7 +109,7 @@ public abstract class AbstractReadOnlyLogicLiveTest<T extends INameableDto> {
 
     @Test
     /*code*/public final void whenResourcesAreRetrievedSorted_then200IsReceived() {
-        final Response response = getApi().findAllSortedAsResponse(SearchField.name.name(), Sort.Direction.ASC.name());
+        final Response response = getApi().findAllSortedAsResponse(SearchField.name.name(), Sort.Direction.ASC.name(), null);
 
         assertThat(response.getStatusCode(), is(200));
     }
@@ -116,7 +118,7 @@ public abstract class AbstractReadOnlyLogicLiveTest<T extends INameableDto> {
 
     @Test
     /*code*/public final void whenResourcesAreRetrievedPaginatedAndSorted_then200IsReceived() {
-        final Response response = getApi().findAllPaginatedAndSortedAsResponse(0, 1, SearchField.name.name(), Sort.Direction.ASC.name());
+        final Response response = getApi().findAllPaginatedAndSortedAsResponse(0, 1, SearchField.name.name(), Sort.Direction.ASC.name(), null);
 
         assertThat(response.getStatusCode(), is(200));
     }
@@ -124,7 +126,7 @@ public abstract class AbstractReadOnlyLogicLiveTest<T extends INameableDto> {
     @Test
     /*code*/public final void whenResourcesAreRetrievedByPaginatedAndWithInvalidSorting_then400IsReceived() {
         // When
-        final Response response = getApi().findAllPaginatedAndSortedAsResponse(0, 4, "invalid", null);
+        final Response response = getApi().findAllPaginatedAndSortedAsResponse(0, 4, "invalid", null, null);
 
         // Then
         assertThat(response.getStatusCode(), is(400));

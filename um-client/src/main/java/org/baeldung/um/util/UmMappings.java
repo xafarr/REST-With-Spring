@@ -2,9 +2,12 @@ package org.baeldung.um.util;
 
 public final class UmMappings {
 
-    public static final String USERS = "users";
-    public static final String PRIVILEGES = "privileges";
-    public static final String ROLES = "roles";
+    // public static final String BASE = WebConstants.PATH_SEP;
+    public static final String BASE = "/api/";
+
+    public static final String USERS = "api/users";
+    public static final String PRIVILEGES = "api/privileges";
+    public static final String ROLES = "api/roles";
 
     // discoverability
 

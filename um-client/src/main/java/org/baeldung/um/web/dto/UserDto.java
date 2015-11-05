@@ -3,6 +3,7 @@ package org.baeldung.um.web.dto;
 import java.util.Set;
 
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.baeldung.common.interfaces.INameableDto;
@@ -11,6 +12,7 @@ import org.baeldung.um.persistence.model.Principal;
 import org.baeldung.um.persistence.model.Role;
 import org.hibernate.validator.constraints.Email;
 
+@XmlRootElement
 public class UserDto implements INameableEntity, INameableDto {
 
     private Long id;

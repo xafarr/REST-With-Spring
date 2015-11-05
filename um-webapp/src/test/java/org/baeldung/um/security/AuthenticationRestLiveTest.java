@@ -8,10 +8,10 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
+import org.baeldung.test.common.client.security.ITestAuthenticator;
 import org.baeldung.um.client.UmPaths;
-import org.baeldung.um.spring.CommonTestConfig;
-import org.baeldung.um.spring.UmClientConfig;
 import org.baeldung.um.spring.UmContextConfig;
+import org.baeldung.um.spring.UmClientConfig;
 import org.baeldung.um.util.Um;
 import org.baeldung.um.web.dto.UserDto;
 import org.junit.Test;
@@ -22,17 +22,19 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
 import com.jayway.restassured.specification.RequestSpecification;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { UmContextConfig.class, UmClientConfig.class, CommonTestConfig.class }, loader = AnnotationConfigContextLoader.class)
+@ContextConfiguration(classes = { UmContextConfig.class, UmClientConfig.class }, loader = AnnotationConfigContextLoader.class)
 @ActiveProfiles({ CLIENT, TEST })
 public class AuthenticationRestLiveTest {
 
     @Autowired
     private UmPaths paths;
+
+    @Autowired
+    private ITestAuthenticator auth;
 
     // tests
 
@@ -75,7 +77,7 @@ public class AuthenticationRestLiveTest {
     // util
 
     protected RequestSpecification givenAuthenticated() {
-        return RestAssured.given().auth().preemptive().basic(Um.ADMIN_EMAIL, Um.ADMIN_PASS);
+        return auth.givenAuthenticated(Um.ADMIN_EMAIL, Um.ADMIN_PASS);
     }
 
 }

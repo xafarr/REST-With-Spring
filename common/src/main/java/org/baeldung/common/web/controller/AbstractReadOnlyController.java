@@ -54,7 +54,7 @@ public abstract class AbstractReadOnlyController<T extends IEntity> {
     }
 
     protected final T findOneInternal(final Long id) {
-        return RestPreconditions.checkFound(getService().findOne(id));
+        return RestPreconditions.checkNotNull(getService().findOne(id));
     }
 
     // find - all

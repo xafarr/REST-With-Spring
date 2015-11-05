@@ -24,7 +24,7 @@ public class UmServletConfig {
 
     @Bean
     public ServletRegistrationBean dispatcherServletRegistration() {
-        final ServletRegistrationBean registration = new ServletRegistrationBean(dispatcherServlet(), "/api/*");
+        final ServletRegistrationBean registration = new ServletRegistrationBean(dispatcherServlet(), "/*");
 
         final Map<String, String> params = new HashMap<String, String>();
         params.put("contextClass", "org.springframework.web.context.support.AnnotationConfigWebApplicationContext");

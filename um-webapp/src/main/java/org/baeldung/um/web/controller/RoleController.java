@@ -8,6 +8,7 @@ import javax.validation.Valid;
 
 import org.baeldung.common.util.QueryConstants;
 import org.baeldung.common.web.controller.AbstractController;
+import org.baeldung.common.web.controller.ISortingController;
 import org.baeldung.um.persistence.model.Role;
 import org.baeldung.um.service.IRoleService;
 import org.baeldung.um.util.Um.Privileges;
@@ -27,7 +28,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @Controller
 @RequestMapping(value = UmMappings.ROLES)
-public class RoleController extends AbstractController<Role> {
+public class RoleController extends AbstractController<Role>implements ISortingController<Role> {
 
     @Autowired
     private IRoleService service;
@@ -40,6 +41,7 @@ public class RoleController extends AbstractController<Role> {
 
     // find - all/paginated
 
+    @Override
     @RequestMapping(params = { QueryConstants.PAGE, QueryConstants.SIZE, QueryConstants.SORT_BY }, method = RequestMethod.GET)
     @ResponseBody
     @Secured(Privileges.CAN_ROLE_READ)
@@ -48,6 +50,7 @@ public class RoleController extends AbstractController<Role> {
         return findPaginatedAndSortedInternal(page, size, sortBy, sortOrder, uriBuilder, response);
     }
 
+    @Override
     @RequestMapping(params = { QueryConstants.PAGE, QueryConstants.SIZE }, method = RequestMethod.GET)
     @ResponseBody
     @Secured(Privileges.CAN_ROLE_READ)
@@ -55,6 +58,7 @@ public class RoleController extends AbstractController<Role> {
         return findPaginatedAndSortedInternal(page, size, null, null, uriBuilder, response);
     }
 
+    @Override
     @RequestMapping(params = { QueryConstants.SORT_BY }, method = RequestMethod.GET)
     @ResponseBody
     @Secured(Privileges.CAN_ROLE_READ)
@@ -62,6 +66,7 @@ public class RoleController extends AbstractController<Role> {
         return findAllSortedInternal(sortBy, sortOrder);
     }
 
+    @Override
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     @Secured(Privileges.CAN_ROLE_READ)

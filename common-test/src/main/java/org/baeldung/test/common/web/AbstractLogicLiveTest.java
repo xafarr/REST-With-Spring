@@ -19,7 +19,6 @@ import org.baeldung.common.web.WebConstants;
 import org.baeldung.test.common.client.template.IRestTemplate;
 import org.baeldung.test.common.util.IDUtil;
 import org.hamcrest.core.StringContains;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
@@ -50,7 +49,7 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
     @Test
     public final void givenResourceExists_whenResourceIsRetrieved_thenResourceHasId() {
         // Given
-        final T newResource = createNewResource();
+        final T newResource = createNewEntity();
         final String uriOfExistingResource = getApi().createAsUri(newResource);
 
         // When
@@ -63,7 +62,7 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
     @Test
     public final void givenResourceExists_whenResourceIsRetrieved_thenResourceIsCorrectlyRetrieved() {
         // Given
-        final T newResource = createNewResource();
+        final T newResource = createNewEntity();
         final String uriOfExistingResource = getApi().createAsUri(newResource);
 
         // When
@@ -76,7 +75,7 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
     @Test
     /* code */public void givenResourceForIdExists_whenResourceOfThatIdIsRetrieved_then200IsRetrieved() {
         // Given
-        final String uriForResourceCreation = getApi().createAsUri(createNewResource());
+        final String uriForResourceCreation = getApi().createAsUri(createNewEntity());
 
         // When
         final Response res = getApi().findOneByUriAsResponse(uriForResourceCreation, null);
@@ -85,24 +84,12 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
         assertThat(res.getStatusCode(), is(200));
     }
 
-    @Test
-    @Ignore("this was written for a neo4j persistence engine, which treats null ids differently than Hibernate")
-    /* code */public void whenResourceIsRetrievedByNegativeId_then409IsReceived() {
-        final Long id = IDUtil.randomNegativeLong();
-
-        // When
-        final Response res = getApi().findOneByUriAsResponse(getUri() + WebConstants.PATH_SEP + id, null);
-
-        // Then
-        assertThat(res.getStatusCode(), is(409));
-    }
-
     // create
 
     @Test
     /* code */public void whenResourceIsCreated_then201IsReceived() {
         // When
-        final Response response = getApi().createAsResponse(createNewResource());
+        final Response response = getApi().createAsResponse(createNewEntity());
 
         // Then
         assertThat(response.getStatusCode(), is(201));
@@ -111,7 +98,7 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
     @Test
     /* code */public void whenResourceWithUnsupportedMediaTypeIsCreated_then415IsReceived() {
         // When
-        final Response response = givenReadAuthenticated().contentType("unknown").post(getUri());
+        final Response response = givenReadAuthenticated().contentType("unknown/unknown").post(getUri());
 
         // Then
         assertThat(response.getStatusCode(), is(415));
@@ -119,7 +106,7 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
 
     @Test
     /* code */public void whenResourceIsCreatedWithNonNullId_then409IsReceived() {
-        final T resourceWithId = createNewResource();
+        final T resourceWithId = createNewEntity();
         resourceWithId.setId(5l);
 
         // When
@@ -132,21 +119,20 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
     @Test
     /* low level */public void whenResourceIsCreated_thenALocationIsReturnedToTheClient() {
         // When
-        final Response response = getApi().createAsResponse(createNewResource());
+        final Response response = getApi().createAsResponse(createNewEntity());
 
         // Then
         assertNotNull(response.getHeader(HttpHeaders.LOCATION));
     }
 
     @Test
-    @Ignore("this will not always pass at this time")
     /* code */public void givenResourceExists_whenResourceWithSameAttributesIsCreated_then409IsReceived() {
         // Given
-        final T newResource = createNewResource();
-        getApi().createAsUri(newResource);
+        final T newEntity = createNewEntity();
+        getApi().createAsUri(newEntity);
 
         // When
-        final Response response = getApi().createAsResponse(newResource);
+        final Response response = getApi().createAsResponse(newEntity);
 
         // Then
         assertThat(response.getStatusCode(), is(409));
@@ -157,7 +143,7 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
     @Test
     /* code */public void givenInvalidResource_whenResourceIsUpdated_then400BadRequestIsReceived() {
         // Given
-        final T existingResource = getApi().create(createNewResource());
+        final T existingResource = getApi().create(createNewEntity());
         getEntityOps().invalidate(existingResource);
 
         // When
@@ -170,7 +156,7 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
     @Test
     /* code */public void whenResourceIsUpdatedWithNullId_then400IsReceived() {
         // When
-        final Response response = getApi().updateAsResponse(createNewResource());
+        final Response response = getApi().updateAsResponse(createNewEntity());
 
         // Then
         assertThat(response.getStatusCode(), is(400));
@@ -179,7 +165,7 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
     @Test
     /* code */public void givenResourceExists_whenResourceIsUpdated_then200IsReceived() {
         // Given
-        final T existingResource = getApi().create(createNewResource());
+        final T existingResource = getApi().create(createNewEntity());
 
         // When
         final Response response = getApi().updateAsResponse(existingResource);
@@ -201,11 +187,11 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
     @Test
     /* code */public void givenResourceDoesNotExist_whenResourceIsUpdated_then404IsReceived() {
         // Given
-        final T unpersistedResource = createNewResource();
-        unpersistedResource.setId(IDUtil.randomPositiveLong());
+        final T unpersistedEntity = createNewEntity();
+        unpersistedEntity.setId(IDUtil.randomPositiveLong());
 
         // When
-        final Response response = getApi().updateAsResponse(unpersistedResource);
+        final Response response = getApi().updateAsResponse(unpersistedEntity);
 
         // Then
         assertThat(response.getStatusCode(), is(404));
@@ -234,7 +220,7 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
     @Test
     /* code */public void givenResourceExists_whenResourceIsDeleted_then204IsReceived() {
         // Given
-        final String uriForResourceCreation = getApi().createAsUri(createNewResource());
+        final String uriForResourceCreation = getApi().createAsUri(createNewEntity());
 
         // When
         final Response response = getApi().deleteAsResponse(uriForResourceCreation);
@@ -246,7 +232,7 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
     @Test
     /* code */public void givenResourceExistedAndWasDeleted_whenRetrievingResource_then404IsReceived() {
         // Given
-        final String uriOfResource = getApi().createAsUri(createNewResource());
+        final String uriOfResource = getApi().createAsUri(createNewEntity());
         getApi().deleteAsResponse(uriOfResource);
 
         // When
@@ -261,7 +247,7 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
     @Test
     public final void givenRequestAcceptsMime_whenResourceIsRetrievedById__thenResponseContentTypeIsMime() {
         // Given
-        final String uriForResourceCreation = getApi().createAsUri(createNewResource());
+        final String uriForResourceCreation = getApi().createAsUri(createNewEntity());
 
         // When
         final Response res = getApi().findOneByUriAsResponse(uriForResourceCreation, null);
@@ -276,7 +262,7 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
 
     protected abstract IDtoOperations<T> getEntityOps();
 
-    protected T createNewResource() {
+    protected T createNewEntity() {
         return getEntityOps().createNewResource();
     }
 

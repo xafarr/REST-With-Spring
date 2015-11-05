@@ -6,8 +6,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.baeldung.common.security.SpringSecurityUtil;
 import org.baeldung.common.util.QueryConstants;
 import org.baeldung.common.web.controller.AbstractController;
+import org.baeldung.common.web.controller.ISortingController;
+import org.baeldung.um.security.UmUser;
 import org.baeldung.um.service.IUserService;
 import org.baeldung.um.util.Um.Privileges;
 import org.baeldung.um.util.UmMappings;
@@ -27,7 +30,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @Controller
 @RequestMapping(value = UmMappings.USERS)
-public class UserController extends AbstractController<UserDto> {
+public class UserController extends AbstractController<UserDto> implements ISortingController<UserDto> {
 
     @Autowired
     private IUserService service;
@@ -40,6 +43,7 @@ public class UserController extends AbstractController<UserDto> {
 
     // find - all/paginated
 
+    @Override
     @RequestMapping(params = { QueryConstants.PAGE, QueryConstants.SIZE, QueryConstants.SORT_BY }, method = RequestMethod.GET)
     @ResponseBody
     @Secured(Privileges.CAN_USER_READ)
@@ -48,6 +52,7 @@ public class UserController extends AbstractController<UserDto> {
         return findPaginatedAndSortedInternal(page, size, sortBy, sortOrder, uriBuilder, response);
     }
 
+    @Override
     @RequestMapping(params = { QueryConstants.PAGE, QueryConstants.SIZE }, method = RequestMethod.GET)
     @ResponseBody
     @Secured(Privileges.CAN_USER_READ)
@@ -55,6 +60,7 @@ public class UserController extends AbstractController<UserDto> {
         return findPaginatedAndSortedInternal(page, size, null, null, uriBuilder, response);
     }
 
+    @Override
     @RequestMapping(params = { QueryConstants.SORT_BY }, method = RequestMethod.GET)
     @ResponseBody
     @Secured(Privileges.CAN_USER_READ)
@@ -62,6 +68,7 @@ public class UserController extends AbstractController<UserDto> {
         return findAllSortedInternal(sortBy, sortOrder);
     }
 
+    @Override
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     @Secured(Privileges.CAN_USER_READ)
@@ -76,6 +83,22 @@ public class UserController extends AbstractController<UserDto> {
     @Secured(Privileges.CAN_USER_READ)
     public UserDto findOne(@PathVariable("id") final Long id, final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
         return findOneInternal(id, uriBuilder, response);
+    }
+
+    @RequestMapping(value = "/current", method = RequestMethod.GET)
+    @ResponseBody
+    @Secured(Privileges.CAN_USER_READ)
+    public UserDto current() {
+        final UmUser currentPrincipal = (UmUser) SpringSecurityUtil.getCurrentUserDetails();
+        if (currentPrincipal == null) {
+            return null;
+        }
+        return findOneInternal(currentPrincipal.getId());
+    }
+
+    @RequestMapping("/user")
+    public UmUser user(final UmUser user) {
+        return user;
     }
 
     // create
