@@ -1,4 +1,4 @@
-angular.module('hello', [ 'ngRoute' ]).config(function($routeProvider, $httpProvider) {
+angular.module('hello', [ 'ngResource', 'ngRoute' ]).config(function($routeProvider, $httpProvider) {
 
     $routeProvider.when('/', {
         templateUrl : 'home.html',
@@ -12,36 +12,40 @@ angular.module('hello', [ 'ngRoute' ]).config(function($routeProvider, $httpProv
 
 }).controller('navigation',
 
-function($rootScope, $scope, $http, $location, $route, $window) {
+function($rootScope, $scope, $http, $httpParamSerializer, $location, $route, $window) {
 
     $scope.tab = function(route) {
         return $route.current && route === $route.current.controller;
     };
 
     var authenticate = function(credentials, callback) {
+        $scope.data = {grant_type:"password", username: credentials.username, password: credentials.password, client_id: "um"};
 
-        var headers = credentials ? {
-            // authorization : "Basic " + btoa(credentials.username + ":" + credentials.password)
-            authorization : "Basic " + btoa("um" + ":" + "VXB0YWtlLUlyb24h")
-        } : {};
-
-        $http.get("http://localhost:8082/um-webapp/oauth/token?grant_type=password&client_id=um&username=" + credentials.username + "&password=" + credentials.password, {
-            headers : headers
-        }).success(function(data) {
-            if (data.access_token) {
-                $rootScope.authenticated = true;
-                $window.sessionStorage.accessToken = data.access_token;
-            } else {
+        var req = {
+            method: 'POST',
+            url: "http://localhost:8082/um-webapp/oauth/token",
+            headers: {
+                "Authorization": "Basic " + btoa("um" + ":" + "VXB0YWtlLUlyb24h"),
+                "Content-type": "application/x-www-form-urlencoded; charset=utf-8"
+            },
+            data: $httpParamSerializer($scope.data)
+        }
+        $http(req).then(
+            function(data){
+                if (data.data.access_token) {
+                    $rootScope.authenticated = true;
+                    $window.sessionStorage.accessToken = data.data.access_token;
+                } else {
+                    $rootScope.authenticated = false;
+                    delete $window.sessionStorage.accessToken;
+                }
+                callback && callback($rootScope.authenticated);
+            }, function(){
                 $rootScope.authenticated = false;
                 delete $window.sessionStorage.accessToken;
+                callback && callback(false);
             }
-            callback && callback($rootScope.authenticated);
-        }).error(function() {
-            $rootScope.authenticated = false;
-            delete $window.sessionStorage.accessToken;
-            callback && callback(false);
-        });
-
+        );
     }
 
     // authenticate();
@@ -63,25 +67,15 @@ function($rootScope, $scope, $http, $location, $route, $window) {
         })
     };
 
-    $scope.logout = function() {
-        $http.post('logout', {}).success(function() {
-            $rootScope.authenticated = false;
-            $location.path("/");
-        }).error(function(data) {
-            console.log("Logout failed")
-            $rootScope.authenticated = false;
-        });
-    }
-
 }).controller('home', function($scope, $http, $window) {
     var headers = {
         "Accept" : "application/json", 
         authorization : "Bearer " + $window.sessionStorage.accessToken
     };
     
-    $http.get("http://localhost:8082/um-webapp/api/users/current", {
+    $http.get("http://localhost:8082/um-webapp/api/roles/1", {
         headers : headers
     }).success(function(data) {
-        $scope.greeting = data;
+        $scope.role = data;
     })
 });
