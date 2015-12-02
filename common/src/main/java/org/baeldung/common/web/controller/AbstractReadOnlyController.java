@@ -49,35 +49,35 @@ public abstract class AbstractReadOnlyController<D extends IDto, E extends IEnti
 
     // search
 
-    public List<D> searchAllInternal(@RequestParam(QueryConstants.Q_PARAM) final String queryString) {
-        return (List<D>) getService().searchAll(queryString);
+    public List<E> searchAllInternal(@RequestParam(QueryConstants.Q_PARAM) final String queryString) {
+        return getService().searchAll(queryString);
     }
 
-    public List<D> searchAllPaginatedInternal(@RequestParam(QueryConstants.Q_PARAM) final String queryString, final int page, final int size) {
-        return (List<D>) getService().searchPaginated(queryString, page, size);
+    public List<E> searchAllPaginatedInternal(@RequestParam(QueryConstants.Q_PARAM) final String queryString, final int page, final int size) {
+        return getService().searchPaginated(queryString, page, size);
     }
 
     // find - one
 
-    protected final D findOneInternal(final Long id, final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
-        final D resource = findOneInternal(id);
+    protected final E findOneInternal(final Long id, final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
+        final E resource = findOneInternal(id);
         eventPublisher.publishEvent(new SingleResourceRetrievedEvent<D>(clazz, uriBuilder, response));
         return resource;
     }
 
-    protected final D findOneInternal(final Long id) {
-        return (D) RestPreconditions.checkNotNull(getService().findOne(id));
+    protected final E findOneInternal(final Long id) {
+        return RestPreconditions.checkNotNull(getService().findOne(id));
     }
 
     // find - all
 
-    protected final List<D> findAllInternal(final HttpServletRequest request, final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
+    protected final List<E> findAllInternal(final HttpServletRequest request, final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
         if (request.getParameterNames().hasMoreElements()) {
             throw new MyResourceNotFoundException();
         }
 
         eventPublisher.publishEvent(new MultipleResourcesRetrievedEvent<D>(clazz, uriBuilder, response));
-        return (List<D>) getService().findAll();
+        return getService().findAll();
     }
 
     protected final void findAllRedirectToPagination(final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
@@ -87,8 +87,8 @@ public abstract class AbstractReadOnlyController<D extends IDto, E extends IEnti
         response.setHeader(HttpHeaders.LOCATION, locationValue);
     }
 
-    protected final List<D> findPaginatedAndSortedInternal(final int page, final int size, final String sortBy, final String sortOrder, final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
-        final Page<D> resultPage = (Page<D>) getService().findAllPaginatedAndSortedRaw(page, size, sortBy, sortOrder);
+    protected final List<E> findPaginatedAndSortedInternal(final int page, final int size, final String sortBy, final String sortOrder, final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
+        final Page<E> resultPage = getService().findAllPaginatedAndSortedRaw(page, size, sortBy, sortOrder);
         if (page > resultPage.getTotalPages()) {
             throw new MyResourceNotFoundException();
         }
@@ -97,8 +97,8 @@ public abstract class AbstractReadOnlyController<D extends IDto, E extends IEnti
         return Lists.newArrayList(resultPage.getContent());
     }
 
-    protected final List<D> findPaginatedInternal(final int page, final int size, final String sortBy, final String sortOrder, final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
-        final Page<D> resultPage = (Page<D>) getService().findAllPaginatedAndSortedRaw(page, size, sortBy, sortOrder);
+    protected final List<E> findPaginatedInternal(final int page, final int size, final String sortBy, final String sortOrder, final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
+        final Page<E> resultPage = getService().findAllPaginatedAndSortedRaw(page, size, sortBy, sortOrder);
         if (page > resultPage.getTotalPages()) {
             throw new MyResourceNotFoundException();
         }
@@ -107,8 +107,8 @@ public abstract class AbstractReadOnlyController<D extends IDto, E extends IEnti
         return Lists.newArrayList(resultPage.getContent());
     }
 
-    protected final List<D> findAllSortedInternal(final String sortBy, final String sortOrder) {
-        final List<D> resultPage = (List<D>) getService().findAllSorted(sortBy, sortOrder);
+    protected final List<E> findAllSortedInternal(final String sortBy, final String sortOrder) {
+        final List<E> resultPage = getService().findAllSorted(sortBy, sortOrder);
         return resultPage;
     }
 

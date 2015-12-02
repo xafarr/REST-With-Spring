@@ -39,11 +39,11 @@ public class RootController {
 
     @SuppressWarnings("unused")
     private void rootInternal(final UriComponentsBuilder uriBuilder, final HttpServletResponse response) {
-        final String userUriNew = uriBuilder.path("/" + UmMappings.Plural.USERS).build().toUriString();
+        final String userUriNew = uriBuilder.path("/" + UmMappings.USERS).build().toUriString();
 
-        final String userUri = LinkUtil.createLinkHeader(WebConstants.PATH_SEP + UmMappings.Plural.USERS, LinkUtil.REL_COLLECTION);
-        final String roleUri = LinkUtil.createLinkHeader(WebConstants.PATH_SEP + UmMappings.Plural.ROLES, LinkUtil.REL_COLLECTION);
-        final String privilegeUri = LinkUtil.createLinkHeader(WebConstants.PATH_SEP + UmMappings.Plural.PRIVILEGES, LinkUtil.REL_COLLECTION);
+        final String userUri = LinkUtil.createLinkHeader(WebConstants.PATH_SEP + UmMappings.USERS, LinkUtil.REL_COLLECTION);
+        final String roleUri = LinkUtil.createLinkHeader(WebConstants.PATH_SEP + UmMappings.ROLES, LinkUtil.REL_COLLECTION);
+        final String privilegeUri = LinkUtil.createLinkHeader(WebConstants.PATH_SEP + UmMappings.PRIVILEGES, LinkUtil.REL_COLLECTION);
         final String discoveredOperations = LinkUtil.gatherLinkHeaders(userUri, roleUri, privilegeUri);
         response.addHeader(HttpHeaders.LINK, discoveredOperations);
     }

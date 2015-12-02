@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>org.baeldung</groupId>
 		<artifactId>user-management-parent</artifactId>
-		<version>0.7.0-SNAPSHOT</version>
+		<version>0.8.0-SNAPSHOT</version>
 	</parent>
 
 	<dependencies>
@@ -19,13 +19,13 @@
 		<dependency>
 			<groupId>org.baeldung</groupId>
 			<artifactId>common</artifactId>
-			<version>0.7.0-SNAPSHOT</version>
+			<version>0.8.0-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.baeldung</groupId>
 			<artifactId>common-client</artifactId>
-			<version>0.7.0-SNAPSHOT</version>
+			<version>0.8.0-SNAPSHOT</version>
 			<scope>test</scope>
 			<classifier>tests</classifier>
 		</dependency>
@@ -33,22 +33,29 @@
 		<dependency>
 			<groupId>org.baeldung</groupId>
 			<artifactId>common-test</artifactId>
-			<version>0.7.0-SNAPSHOT</version>
+			<version>0.8.0-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.baeldung</groupId>
 			<artifactId>um-client</artifactId>
-			<version>0.7.0-SNAPSHOT</version>
+			<version>0.8.0-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.baeldung</groupId>
 			<artifactId>um-client</artifactId>
-			<version>0.7.0-SNAPSHOT</version>
+			<version>0.8.0-SNAPSHOT</version>
 			<scope>test</scope>
 			<classifier>tests</classifier>
+		</dependency>
+
+		<!-- boot -->
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 
 		<!-- security -->
@@ -67,17 +74,6 @@
 		</dependency>
 
 		<!-- web -->
-
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger2</artifactId>
-			<version>2.2.2</version>
-		</dependency>
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger-ui</artifactId>
-			<version>2.2.2</version>
-		</dependency>
 
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
