@@ -6,10 +6,10 @@ import org.junit.Test;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-public class UriParsingUnitTest {
+public class UriUnitTest {
 
     @Test
-    public final void whenURIIsParsed_thenResultIsCorrect() {
+    public final void whenUriIsParsed_thenResultIsCorrect() {
         final String uri = "http://localhost:8080/rest-sec/api/privilege?q=name%3DjDiedXRD";
 
         // When
