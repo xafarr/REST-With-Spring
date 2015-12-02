@@ -5,7 +5,6 @@ import java.util.List;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.baeldung.common.persistence.exception.MyEntityNotFoundException;
 import org.baeldung.common.web.exception.ApiError;
 import org.baeldung.common.web.exception.MyConflictException;
@@ -68,11 +67,6 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     public final ResponseEntity<Object> handleBadRequest(final RuntimeException ex, final WebRequest request) {
         log.info("Bad Request: {}", ex.getLocalizedMessage());
         log.debug("Bad Request: ", ex);
-
-        if (ExceptionUtils.getRootCauseMessage(ex).contains("uplicate")) {
-            final ApiError apiError = message(HttpStatus.CONFLICT, ex);
-            return handleExceptionInternal(ex, apiError, new HttpHeaders(), HttpStatus.CONFLICT, request);
-        }
 
         final ApiError apiError = message(HttpStatus.BAD_REQUEST, ex);
         return handleExceptionInternal(ex, apiError, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);

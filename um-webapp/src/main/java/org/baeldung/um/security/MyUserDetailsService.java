@@ -11,6 +11,7 @@ import org.baeldung.um.service.IPrincipalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -59,7 +60,7 @@ public final class MyUserDetailsService implements UserDetailsService {
         final String[] roleStringsAsArray = rolesToString.toArray(new String[rolesToString.size()]);
         final List<GrantedAuthority> auths = AuthorityUtils.createAuthorityList(roleStringsAsArray);
 
-        return new UmUser(principal.getName(), principal.getPassword(), auths, principal.getId());
+        return new User(principal.getName(), principal.getPassword(), auths);
     }
 
 }

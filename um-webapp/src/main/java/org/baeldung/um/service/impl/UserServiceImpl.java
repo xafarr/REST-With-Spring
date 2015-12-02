@@ -3,6 +3,8 @@ package org.baeldung.um.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.tuple.Triple;
+import org.baeldung.common.search.ClientOperation;
 import org.baeldung.common.web.RestPreconditions;
 import org.baeldung.um.persistence.model.Principal;
 import org.baeldung.um.service.IPrincipalService;
@@ -31,6 +33,49 @@ public class UserServiceImpl implements IUserService {
     }
 
     // API
+
+    // search
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UserDto> searchAll(final Triple<String, ClientOperation, String>... constraints) {
+        final List<Principal> principals = principalService.searchAll(constraints);
+        final List<UserDto> userDtos = principals.stream().map(this::convert).collect(Collectors.toList());
+        return Lists.newArrayList(userDtos);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserDto searchOne(final Triple<String, ClientOperation, String>... constraints) {
+        final Principal principalResultedFromSearch = principalService.searchOne(constraints);
+        final UserDto userResultedFromSearch = convert(principalResultedFromSearch);
+        return userResultedFromSearch;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<UserDto> searchPaginated(final int page, final int size, final Triple<String, ClientOperation, String>... constraints) {
+        final Page<Principal> principals = principalService.searchPaginated(page, size, constraints);
+
+        final List<UserDto> userDtos = principals.getContent().stream().map(this::convert).collect(Collectors.toList());
+        return new PageImpl<UserDto>(userDtos, new PageRequest(page, size, null), principals.getTotalElements());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UserDto> searchAll(final String queryString) {
+        final List<Principal> principals = principalService.searchAll(queryString);
+        final List<UserDto> userDtos = principals.stream().map(this::convert).collect(Collectors.toList());
+        return Lists.newArrayList(userDtos);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UserDto> searchPaginated(final String queryString, final int page, final int size) {
+        final List<Principal> principals = principalService.searchPaginated(queryString, page, size);
+        final List<UserDto> userDtos = principals.stream().map(this::convert).collect(Collectors.toList());
+        return Lists.newArrayList(userDtos);
+    }
 
     // find - one
 
