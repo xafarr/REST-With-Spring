@@ -9,10 +9,14 @@ import org.baeldung.um.spring.UmServletConfig;
 import org.baeldung.um.spring.UmWebConfig;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.ErrorMvcAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Import;
 
-@SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
+@SpringBootApplication(exclude = { // @formatter:off
+        SecurityAutoConfiguration.class
+        , ErrorMvcAutoConfiguration.class
+}) // @formatter:on
 @Import({ // @formatter:off
     UmContextConfig.class,
     UmPersistenceJpaConfig.class,

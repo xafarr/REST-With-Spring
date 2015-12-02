@@ -70,6 +70,11 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         return handleExceptionInternal(ex, apiError, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
+    // 401
+
+    // @ExceptionHandler({ InsufficientAuthenticationException.class })
+    // @ExceptionHandler({ AuthenticationException.class })
+
     // 403
 
     @ExceptionHandler({ AccessDeniedException.class })
