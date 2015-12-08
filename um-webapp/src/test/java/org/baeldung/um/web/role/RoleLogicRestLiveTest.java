@@ -5,7 +5,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
@@ -60,30 +59,6 @@ public class RoleLogicRestLiveTest extends UmLogicRestLiveTest<Role>implements I
         assertThat(existingResource.getPrivileges(), not(Matchers.<Privilege> empty()));
     }
 
-    // escaping characters
-
-    @Test
-    @Ignore("temp + move in parent")
-    public final void givenWorkingWithSpecialCharacters_whtnResourcesIfRetrievedByName_thenResourceIsCorrectlyRetrieved() {
-        final Role newResource = getEntityOps().createNewResource();
-        newResource.setName("Macy's,Dell, Inc.");
-        getApi().createAsResponse(newResource);
-
-        // When
-        final Role retrievedResource = getApi().findByName(newResource.getName());
-        assertEquals(newResource, retrievedResource);
-    }
-
-    // find one
-
-    @Test
-    public final void givenResourceExists_whenResourceIsRetrievedByName_thenResourceIsCorrectlyRetrieved() {
-        final Role newResource = getEntityOps().createNewResource();
-        getApi().create(newResource);
-        final Role existingResourceByName = getApi().findByName(newResource.getName());
-        assertEquals(newResource, existingResourceByName);
-    }
-
     // find all
 
     @Test
@@ -105,18 +80,6 @@ public class RoleLogicRestLiveTest extends UmLogicRestLiveTest<Role>implements I
 
         // Then
         assertThat(createAsResponse.getStatusCode(), is(201));
-    }
-
-    @Test
-    @Ignore("temp")
-    public final void givenExistingResourceHasNameWithSpace_whenResourcesIfRetrievedByName_thenResourceIsCorrectlyRetrieved() {
-        final Role newResource = getEntityOps().createNewResource();
-        newResource.setName(randomAlphabetic(4) + " " + randomAlphabetic(4));
-        getApi().createAsResponse(newResource);
-
-        // When
-        final Role retrievedResource = getApi().findByName(newResource.getName());
-        assertEquals(newResource, retrievedResource);
     }
 
     @Test

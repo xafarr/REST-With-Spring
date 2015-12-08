@@ -30,6 +30,10 @@ public class UmApp extends SpringBootServletInitializer {
             UmJavaSecurityConfig.class
     };// @formatter:on
 
+    public UmApp() {
+        super();
+    }
+
     //
 
     @Override

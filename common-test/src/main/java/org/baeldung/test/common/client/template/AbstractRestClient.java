@@ -3,16 +3,12 @@ package org.baeldung.test.common.client.template;
 import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.lang3.tuple.Triple;
 import org.apache.http.HttpHeaders;
 import org.baeldung.client.marshall.IMarshaller;
-import org.baeldung.client.util.SearchUriBuilder;
 import org.baeldung.common.interfaces.IDto;
-import org.baeldung.common.search.ClientOperation;
 import org.baeldung.common.util.QueryConstants;
 import org.baeldung.common.web.WebConstants;
 import org.baeldung.test.common.client.security.ITestAuthenticator;
-import org.baeldung.test.common.search.SearchTestUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +18,6 @@ import com.google.common.collect.Lists;
 import com.jayway.restassured.response.Response;
 import com.jayway.restassured.specification.RequestSpecification;
 
-@SuppressWarnings({ "unchecked", "rawtypes" })
 public abstract class AbstractRestClient<T extends IDto> implements IRestTemplate<T> {
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -299,62 +294,6 @@ public abstract class AbstractRestClient<T extends IDto> implements IRestTemplat
     @Override
     public final Response deleteAsResponse(final String uriOfResource) {
         return givenDeleteAuthenticated().delete(uriOfResource);
-    }
-
-    // search - as response
-
-    @Override
-    public final Response searchAsResponse(final Triple<String, ClientOperation, String> idOp, final Triple<String, ClientOperation, String> nameOp) {
-        final String queryURI = getUri() + QueryConstants.QUERY_PREFIX + SearchTestUtil.constructQueryString(idOp, nameOp);
-        return readExtendedRequest().get(queryURI);
-    }
-
-    @Override
-    public final Response searchAsResponse(final Triple<String, ClientOperation, String> idOp, final Triple<String, ClientOperation, String> nameOp, final int page, final int size) {
-        final String queryURI = getUri() + QueryConstants.QUERY_PREFIX + SearchTestUtil.constructQueryString(idOp, nameOp) + "&page=" + page + "&size=" + size;
-        return readExtendedRequest().get(queryURI);
-    }
-
-    // search
-
-    @Override
-    public final List<T> searchAll(final Triple<String, ClientOperation, String>... constraints) {
-        final Response searchResponse = searchAsResponse(constraints);
-
-        return getMarshaller().<T> decodeList(searchResponse.getBody().asString(), clazz);
-    }
-
-    @Override
-    public final T searchOne(final Triple<String, ClientOperation, String>... constraints) {
-        final List<T> all = searchAll(constraints);
-        if (all.isEmpty()) {
-            return null;
-        }
-        Preconditions.checkState(all.size() <= 1);
-        return all.get(0);
-    }
-
-    @Override
-    public final Response searchAsResponse(final Triple<String, ClientOperation, String>... constraints) {
-        final SearchUriBuilder builder = new SearchUriBuilder();
-        for (final Triple<String, ClientOperation, String> constraint : constraints) {
-            builder.consume(constraint);
-        }
-        final String queryURI = getUri() + QueryConstants.QUERY_PREFIX + builder.build();
-
-        final Response searchResponse = readExtendedRequest().get(queryURI);
-        Preconditions.checkState(searchResponse.getStatusCode() == 200, "Search is = " + searchResponse.getStatusCode());
-
-        return searchResponse;
-    }
-
-    @Override
-    public final List<T> searchPaginated(final Triple<String, ClientOperation, String> idOp, final Triple<String, ClientOperation, String> nameOp, final int page, final int size) {
-        final String queryURI = getUri() + QueryConstants.QUERY_PREFIX + SearchTestUtil.constructQueryString(idOp, nameOp) + "&page=" + page + "&size=" + size;
-        final Response searchResponse = readExtendedRequest().get(queryURI);
-        Preconditions.checkState(searchResponse.getStatusCode() == 200, "Search is = " + searchResponse.getStatusCode());
-
-        return getMarshaller().<List> decode(searchResponse.getBody().asString(), List.class);
     }
 
     // count

@@ -1,7 +1,5 @@
 package org.baeldung.um.client.template;
 
-import java.util.List;
-
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.baeldung.test.common.client.template.AbstractRestClient;
@@ -11,8 +9,6 @@ import org.baeldung.um.util.Um;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-
-import com.google.common.base.Preconditions;
 
 @Component
 @Profile("client")
@@ -26,16 +22,6 @@ public final class RoleRestClient extends AbstractRestClient<Role> {
     }
 
     // API
-
-    public final Role findByName(final String name) {
-        final String resourcesAsRepresentation = findOneByUriAsString(getUri() + "?q=name=" + name);
-        final List<Role> resources = marshaller.decodeList(resourcesAsRepresentation, clazz);
-        if (resources.isEmpty()) {
-            return null;
-        }
-        Preconditions.checkState(resources.size() == 1);
-        return resources.get(0);
-    }
 
     // template method
 

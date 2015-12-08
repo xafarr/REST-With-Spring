@@ -4,11 +4,6 @@ public final class QueryConstants {
 
     public static final String ID_NEG = SearchField.id.toString() + QueryConstants.NEGATION;
     public static final String NAME_NEG = SearchField.name.toString() + QueryConstants.NEGATION;
-    public static final String LOGIN_NAME_NEG = SearchField.loginName.toString() + QueryConstants.NEGATION;
-    public static final String EMAIL_NEG = SearchField.email.toString() + QueryConstants.NEGATION;
-    public static final String TENANT_NEG = SearchField.tenant.toString() + QueryConstants.NEGATION;
-    public static final String LOCKED_NEG = SearchField.locked.toString() + QueryConstants.NEGATION;
-    public static final String DESCRIPTION_NEG = SearchField.description.toString() + QueryConstants.NEGATION;
 
     public static final String QUESTIONMARK = "?";
 
@@ -26,7 +21,6 @@ public final class QueryConstants {
     /** - note: this character represents the ANY wildcard for the client consumption of the API */
     public static final String ANY_CLIENT = "*";
     public static final String QUERY_PREFIX = QUESTIONMARK + "q=";
-    public static final String Q_PARAM = "q";
     public static final String SEPARATOR = ",";
     public static final String SEPARATOR_AMPER = "&";
     public static final String OP = "=";
