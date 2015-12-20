@@ -2,6 +2,7 @@ package org.baeldung.um.run;
 
 import org.baeldung.um.spring.UmContextConfig;
 import org.baeldung.um.spring.UmJavaSecurityConfig;
+import org.baeldung.um.spring.UmMetricConfig;
 import org.baeldung.um.spring.UmPersistenceJpaConfig;
 import org.baeldung.um.spring.UmServiceConfig;
 import org.baeldung.um.spring.UmServletConfig;
@@ -21,12 +22,16 @@ public class UmApp extends SpringBootServletInitializer {
 
     private final static Object[] CONFIGS = { // @formatter:off
             UmApp.class,
-
             UmContextConfig.class,
+
             UmPersistenceJpaConfig.class,
+
             UmServiceConfig.class,
+            UmMetricConfig.class,
+
             UmWebConfig.class,
             UmServletConfig.class,
+
             UmJavaSecurityConfig.class
     };// @formatter:on
 
