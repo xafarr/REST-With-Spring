@@ -9,7 +9,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class UriUnitTest {
 
     @Test
-    public final void whenUriIsParsed_thenResultIsCorrect() {
+    public final void whenURIIsParsed_thenResultIsCorrect() {
         final String uri = "http://localhost:8080/rest-sec/api/privilege?q=name%3DjDiedXRD";
 
         // When
