@@ -19,7 +19,7 @@ import org.baeldung.um.persistence.model.Privilege;
 import org.baeldung.um.persistence.model.Role;
 import org.baeldung.um.spring.CommonTestConfig;
 import org.baeldung.um.spring.UmClientConfig;
-import org.baeldung.um.spring.UmContextConfig;
+import org.baeldung.um.spring.UmLiveTestConfig;
 import org.baeldung.um.util.Um;
 import org.hamcrest.core.StringContains;
 import org.junit.Test;
@@ -39,7 +39,7 @@ import com.jayway.restassured.specification.RequestSpecification;
 
 @ActiveProfiles({ CLIENT, TEST })
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { UmContextConfig.class, UmClientConfig.class, CommonTestConfig.class }, loader = AnnotationConfigContextLoader.class)
+@ContextConfiguration(classes = { UmLiveTestConfig.class, UmClientConfig.class, CommonTestConfig.class }, loader = AnnotationConfigContextLoader.class)
 public class RoleSimpleLiveTest {
 
     private final static String JSON = MediaType.APPLICATION_JSON.toString();

@@ -1,17 +1,17 @@
 package org.baeldung.um.spring;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 @Configuration
-@ImportResource("classpath*:umContextConfig.xml")
-@PropertySource({ "classpath:env-${envTarget:dev}.properties" })
-public class UmContextConfig {
+@PropertySource("classpath:web-${webTarget:local}.properties")
+@ComponentScan({ "org.baeldung.um.model" })
+public class UmLiveTestConfig {
 
-    public UmContextConfig() {
+    public UmLiveTestConfig() {
         super();
     }
 
