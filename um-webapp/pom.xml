@@ -221,18 +221,34 @@
 		</profile>
 
 		<profile>
-			<id>smoke-read-only</id>
+			<id>live</id>
 			<build>
 				<plugins>
 
 					<plugin>
+						<groupId>org.codehaus.cargo</groupId>
+						<artifactId>cargo-maven2-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>start-server</id>
+								<phase>pre-integration-test</phase>
+								<goals>
+									<goal>start</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>stop-server</id>
+								<phase>post-integration-test</phase>
+								<goals>
+									<goal>stop</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-surefire-plugin</artifactId>
-						<configuration>
-							<excludes>
-								<exclude>**/*Test.java</exclude>
-							</excludes>
-						</configuration>
 						<executions>
 							<execution>
 								<phase>integration-test</phase>
@@ -241,13 +257,14 @@
 								</goals>
 								<configuration>
 									<excludes>
-										<exclude>**/*ProductionRestLiveTest.java</exclude>
-										<exclude>**/*ManualTest.java</exclude>
+										<exclude>none</exclude>
 									</excludes>
 									<includes>
-										<include>**/*ReadOnly*LiveTest.java</include>
+										<include>**/*LiveTest.java</include>
 									</includes>
-									<!-- <systemPropertyVariables> <secWebTarget>smoke_staging</secWebTarget> </systemPropertyVariables> -->
+									<systemPropertyVariables>
+										<webTarget>cargo</webTarget>
+									</systemPropertyVariables>
 								</configuration>
 							</execution>
 						</executions>
