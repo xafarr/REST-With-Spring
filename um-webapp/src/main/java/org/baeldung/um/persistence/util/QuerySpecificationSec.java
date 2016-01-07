@@ -17,6 +17,8 @@ import org.baeldung.um.persistence.model.meta.Privilege_;
 import org.baeldung.um.persistence.model.meta.Role_;
 import org.springframework.data.jpa.domain.Specification;
 
+import com.google.common.base.Preconditions;
+
 /**
  * The query specifications are built manually here; this is a limitation and should be contained to this only class
  */
@@ -210,19 +212,19 @@ public final class QuerySpecificationSec {
     }
 
     private static Specification<Privilege> privilegeByNameEq(final String name, final boolean negated) {
-        return QuerySpecificationSec.<Privilege> entityByKeyEq(name, negated, Privilege_.name);
+        return QuerySpecificationSec.<Privilege> entityByKeyEq(name, negated, Preconditions.checkNotNull(Privilege_.name));
     }
 
     private static Specification<Privilege> privilegeByNameContains(final String name, final boolean negated) {
-        return QuerySpecificationSec.<Privilege> entityByKeyContains(name, negated, Privilege_.name);
+        return QuerySpecificationSec.<Privilege> entityByKeyContains(name, negated, Preconditions.checkNotNull(Privilege_.name));
     }
 
     private static Specification<Privilege> privilegeByNameStartsWith(final String name, final boolean negated) {
-        return QuerySpecificationSec.<Privilege> entityByKeyStartsWith(name, negated, Privilege_.name);
+        return QuerySpecificationSec.<Privilege> entityByKeyStartsWith(name, negated, Preconditions.checkNotNull(Privilege_.name));
     }
 
     private static Specification<Privilege> privilegeByNameEndsWith(final String name, final boolean negated) {
-        return QuerySpecificationSec.<Privilege> entityByKeyEndsWith(name, negated, Privilege_.name);
+        return QuerySpecificationSec.<Privilege> entityByKeyEndsWith(name, negated, Preconditions.checkNotNull(Privilege_.name));
     }
 
     private static Specification<Privilege> privilegeByDescriptionEq(final String description, final boolean negated) {

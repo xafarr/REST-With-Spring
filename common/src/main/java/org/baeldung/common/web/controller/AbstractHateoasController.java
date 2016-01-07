@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.baeldung.common.persistence.model.IEntity;
 import org.baeldung.common.persistence.service.IRawService;
-import org.baeldung.common.util.QueryConstants;
 import org.baeldung.common.web.RestPreconditions;
 import org.baeldung.common.web.exception.MyResourceNotFoundException;
 import org.slf4j.Logger;
@@ -19,7 +18,6 @@ import org.springframework.hateoas.ResourceSupport;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -28,16 +26,6 @@ public abstract class AbstractHateoasController<D extends ResourceSupport, E ext
 
     @Autowired
     protected ApplicationEventPublisher eventPublisher;
-
-    // search
-
-    public List<D> searchAllInternal(@RequestParam(QueryConstants.Q_PARAM) final String queryString) {
-        return convertList(getService().searchAll(queryString));
-    }
-
-    public List<D> searchAllPaginatedInternal(@RequestParam(QueryConstants.Q_PARAM) final String queryString, final int page, final int size) {
-        return convertList(getService().searchPaginated(queryString, page, size));
-    }
 
     // find - one
 

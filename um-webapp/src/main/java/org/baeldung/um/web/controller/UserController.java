@@ -37,20 +37,6 @@ public class UserController extends AbstractController<UserDto, UserDto> impleme
 
     // API
 
-    // search
-
-    @RequestMapping(params = { QueryConstants.Q_PARAM }, method = RequestMethod.GET)
-    @ResponseBody
-    public List<UserDto> searchAll(@RequestParam(QueryConstants.Q_PARAM) final String queryString) {
-        return searchAllInternal(queryString);
-    }
-
-    @RequestMapping(params = { QueryConstants.Q_PARAM, QueryConstants.PAGE, QueryConstants.SIZE }, method = RequestMethod.GET)
-    @ResponseBody
-    public List<UserDto> searchAllPaginated(@RequestParam(QueryConstants.Q_PARAM) final String queryString, @RequestParam(value = QueryConstants.PAGE) final int page, @RequestParam(value = QueryConstants.SIZE) final int size) {
-        return searchAllPaginatedInternal(queryString, page, size);
-    }
-
     // find - all/paginated
 
     @Override

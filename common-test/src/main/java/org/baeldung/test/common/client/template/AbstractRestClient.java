@@ -318,23 +318,6 @@ public abstract class AbstractRestClient<T extends IDto> implements IRestTemplat
     // search
 
     @Override
-    public final List<T> searchAll(final Triple<String, ClientOperation, String>... constraints) {
-        final Response searchResponse = searchAsResponse(constraints);
-
-        return getMarshaller().<T> decodeList(searchResponse.getBody().asString(), clazz);
-    }
-
-    @Override
-    public final T searchOne(final Triple<String, ClientOperation, String>... constraints) {
-        final List<T> all = searchAll(constraints);
-        if (all.isEmpty()) {
-            return null;
-        }
-        Preconditions.checkState(all.size() <= 1);
-        return all.get(0);
-    }
-
-    @Override
     public final Response searchAsResponse(final Triple<String, ClientOperation, String>... constraints) {
         final SearchUriBuilder builder = new SearchUriBuilder();
         for (final Triple<String, ClientOperation, String> constraint : constraints) {

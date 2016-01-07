@@ -24,7 +24,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -45,16 +44,6 @@ public abstract class AbstractReadOnlyController<D extends IDto, E extends IEnti
 
         Preconditions.checkNotNull(clazzToSet);
         clazz = clazzToSet;
-    }
-
-    // search
-
-    public List<D> searchAllInternal(@RequestParam(QueryConstants.Q_PARAM) final String queryString) {
-        return (List<D>) getService().searchAll(queryString);
-    }
-
-    public List<D> searchAllPaginatedInternal(@RequestParam(QueryConstants.Q_PARAM) final String queryString, final int page, final int size) {
-        return (List<D>) getService().searchPaginated(queryString, page, size);
     }
 
     // find - one
