@@ -36,9 +36,6 @@ public abstract class AbstractController<T extends IEntity> extends AbstractRead
     // delete/remove
 
     protected final void deleteByIdInternal(final long id) {
-        // InvalidDataAccessApiUsageException - ResourceNotFoundException
-        // IllegalStateException - ResourceNotFoundException
-        // DataAccessException - ignored
         getService().delete(id);
     }
 
