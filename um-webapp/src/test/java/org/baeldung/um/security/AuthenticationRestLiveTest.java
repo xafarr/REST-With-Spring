@@ -72,7 +72,8 @@ public class AuthenticationRestLiveTest {
         final Response response = givenAuthenticated().contentType(APPLICATION_JSON.toString()).get(paths.getAuthenticationUri());
 
         // Then
-        assertEquals(new UserDto(Um.EMAIL, Um.PASS, null), response.as(UserDto.class));
+        final UserDto actual = response.as(UserDto.class);
+        assertEquals(Um.EMAIL, actual.getEmail());
     }
 
     // util

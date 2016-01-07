@@ -16,6 +16,7 @@ public class UserDto implements INameableEntity, INameableDto {
 
     private Long id;
 
+    @NotNull
     private String name;
 
     @NotNull
@@ -30,12 +31,13 @@ public class UserDto implements INameableEntity, INameableDto {
         super();
     }
 
-    public UserDto(final String nameToSet, final String passwordToSet, final Set<Role> rolesToSet) {
+    public UserDto(final String name, final String email, final String password, final Set<Role> roles) {
         super();
 
-        name = nameToSet;
-        password = passwordToSet;
-        roles = rolesToSet;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.roles = roles;
     }
 
     public UserDto(final Principal principal) {

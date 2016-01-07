@@ -19,7 +19,7 @@ public final class UmMappings {
 
     }
 
-    public static final String AUTHENTICATION = "authentication";
+    public static final String AUTHENTICATION = "api/authentication";
 
     private UmMappings() {
         throw new AssertionError();
