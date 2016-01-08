@@ -18,7 +18,7 @@ import com.google.common.collect.Lists;
 import com.jayway.restassured.response.Response;
 import com.jayway.restassured.specification.RequestSpecification;
 
-public abstract class AbstractRestClient<T extends IDto> implements IRestTemplate<T> {
+public abstract class AbstractRestClient<T extends IDto> implements IRestClient<T> {
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
@@ -42,6 +42,7 @@ public abstract class AbstractRestClient<T extends IDto> implements IRestTemplat
         return findOneByUri(uriOfResource);
     }
 
+    @Override
     public final Response findOneAsResponse(final long id) {
         return findOneAsResponse(id, null);
     }
@@ -77,6 +78,7 @@ public abstract class AbstractRestClient<T extends IDto> implements IRestTemplat
         return response.asString();
     }
 
+    @Override
     public final Response findOneByUriAsResponse(final String uriOfResource) {
         return findOneByUriAsResponse(uriOfResource, null);
     }
@@ -287,13 +289,13 @@ public abstract class AbstractRestClient<T extends IDto> implements IRestTemplat
 
     @Override
     public final void delete(final long id) {
-        final Response deleteResponse = deleteAsResponse(getUri() + WebConstants.PATH_SEP + id);
+        final Response deleteResponse = deleteAsResponse(id);
         Preconditions.checkState(deleteResponse.getStatusCode() == 204);
     }
 
     @Override
-    public final Response deleteAsResponse(final String uriOfResource) {
-        return givenDeleteAuthenticated().delete(uriOfResource);
+    public final Response deleteAsResponse(final long id) {
+        return givenDeleteAuthenticated().delete(getUri() + WebConstants.PATH_SEP + id);
     }
 
     // count
@@ -348,7 +350,8 @@ public abstract class AbstractRestClient<T extends IDto> implements IRestTemplat
         return auth.givenBasicAuthenticated(credentials.getLeft(), credentials.getRight());
     }
 
-    final RequestSpecification givenDeleteAuthenticated() {
+    @Override
+    public final RequestSpecification givenDeleteAuthenticated() {
         final Pair<String, String> credentials = getWriteCredentials();
         return auth.givenBasicAuthenticated(credentials.getLeft(), credentials.getRight());
     }
