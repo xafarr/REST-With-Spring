@@ -1,5 +1,6 @@
 package org.baeldung.um.run;
 
+import org.baeldung.um.persistence.setup.MyApplicationContextInitializer;
 import org.baeldung.um.spring.AuthorizationServerConfiguration;
 import org.baeldung.um.spring.ResourceServerConfiguration;
 import org.baeldung.um.spring.UmContextConfig;
@@ -35,7 +36,7 @@ public class UmApp extends SpringBootServletInitializer {
 
     @Override
     protected SpringApplicationBuilder configure(final SpringApplicationBuilder application) {
-        return application.sources(CONFIGS);
+        return application.sources(CONFIGS).initializers(new MyApplicationContextInitializer());
     }
 
     public static void main(final String... args) {

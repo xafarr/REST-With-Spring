@@ -2,7 +2,7 @@ package org.baeldung.um.client.template;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.baeldung.test.common.client.template.AbstractTestRestTemplate;
+import org.baeldung.test.common.client.template.AbstractRestClient;
 import org.baeldung.um.client.UmPaths;
 import org.baeldung.um.persistence.model.Role;
 import org.baeldung.um.util.Um;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Profile("client")
-public final class RoleTestRestTemplate extends AbstractTestRestTemplate<Role> {
+public final class RoleTestRestTemplate extends AbstractRestClient<Role> {
 
     @Autowired
     protected UmPaths paths;

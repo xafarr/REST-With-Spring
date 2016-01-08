@@ -51,7 +51,7 @@ public final class RoleSimpleApiClient {
 
     public final Response findOneAsResponse(final long id) {
         final String uriOfResource = getUri() + WebConstants.PATH_SEP + id;
-        return findByUriAsResponse(uriOfResource);
+        return findOneByUriAsResponse(uriOfResource);
     }
 
     public final Role findOneByUri(final String uriOfResource) {
@@ -60,13 +60,13 @@ public final class RoleSimpleApiClient {
     }
 
     public final String findOneByUriAsString(final String uriOfResource) {
-        final Response response = findByUriAsResponse(uriOfResource);
+        final Response response = findOneByUriAsResponse(uriOfResource);
         Preconditions.checkState(response.getStatusCode() == 200);
 
         return response.asString();
     }
 
-    public final Response findByUriAsResponse(final String uriOfResource) {
+    public final Response findOneByUriAsResponse(final String uriOfResource) {
         return read(uriOfResource);
     }
 
@@ -86,13 +86,13 @@ public final class RoleSimpleApiClient {
     }
 
     public final Response findAllAsResponse() {
-        return findByUriAsResponse(getUri());
+        return findOneByUriAsResponse(getUri());
     }
 
     // find - all (sorted, paginated)
 
     public final List<Role> findAllSorted(final String sortBy, final String sortOrder) {
-        final Response findAllResponse = findByUriAsResponse(getUri() + QueryConstants.Q_SORT_BY + sortBy + QueryConstants.S_ORDER + sortOrder);
+        final Response findAllResponse = findOneByUriAsResponse(getUri() + QueryConstants.Q_SORT_BY + sortBy + QueryConstants.S_ORDER + sortOrder);
         return marshaller.<Role> decodeList(findAllResponse.getBody().asString(), clazz);
     }
 
@@ -126,7 +126,7 @@ public final class RoleSimpleApiClient {
             uri.append(sortOrder);
         }
 
-        return findByUriAsResponse(uri.toString());
+        return findOneByUriAsResponse(uri.toString());
     }
 
     public final Response findAllSortedAsResponse(final String sortBy, final String sortOrder) {
@@ -143,7 +143,7 @@ public final class RoleSimpleApiClient {
             uri.append(sortOrder);
         }
 
-        return findByUriAsResponse(uri.toString());
+        return findOneByUriAsResponse(uri.toString());
     }
 
     public final Response findAllPaginatedAsResponse(final int page, final int size) {
@@ -154,7 +154,7 @@ public final class RoleSimpleApiClient {
         uri.append(QueryConstants.SEPARATOR_AMPER);
         uri.append("size=");
         uri.append(size);
-        return findByUriAsResponse(uri.toString());
+        return findOneByUriAsResponse(uri.toString());
     }
 
     // create
@@ -198,12 +198,12 @@ public final class RoleSimpleApiClient {
     // delete
 
     public final void delete(final long id) {
-        final Response deleteResponse = deleteAsResponse(getUri() + WebConstants.PATH_SEP + id);
+        final Response deleteResponse = deleteAsResponse(id);
         Preconditions.checkState(deleteResponse.getStatusCode() == 204);
     }
 
-    public final Response deleteAsResponse(final String uriOfResource) {
-        return givenAuthenticated().delete(uriOfResource);
+    public final Response deleteAsResponse(final long id) {
+        return givenAuthenticated().delete(getUri() + WebConstants.PATH_SEP + id);
     }
 
     // count

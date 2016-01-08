@@ -21,7 +21,7 @@ import com.jayway.restassured.specification.RequestSpecification;
 /**
  * REST Template for the consumption of the REST API <br>
  */
-public abstract class AbstractTestRestTemplate<T extends IDto> implements IRestTemplate<T> {
+public abstract class AbstractRestClient<T extends IDto> implements IRestClient<T> {
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     protected final Class<T> clazz;
@@ -32,7 +32,7 @@ public abstract class AbstractTestRestTemplate<T extends IDto> implements IRestT
     @Autowired
     protected ITestAuthenticator auth;
 
-    public AbstractTestRestTemplate(final Class<T> clazzToSet) {
+    public AbstractRestClient(final Class<T> clazzToSet) {
         super();
 
         Preconditions.checkNotNull(clazzToSet);
@@ -45,6 +45,11 @@ public abstract class AbstractTestRestTemplate<T extends IDto> implements IRestT
     public final T findOne(final long id) {
         final String uriOfResource = getUri() + WebConstants.PATH_SEP + id;
         return findOneByUri(uriOfResource, null);
+    }
+
+    @Override
+    public final Response findOneAsResponse(final long id) {
+        return findOneAsResponse(id, null);
     }
 
     @Override
@@ -71,6 +76,11 @@ public abstract class AbstractTestRestTemplate<T extends IDto> implements IRestT
         Preconditions.checkState(response.getStatusCode() == 200);
 
         return response.asString();
+    }
+
+    @Override
+    public final Response findOneByUriAsResponse(final String uriOfResource) {
+        return findOneByUriAsResponse(uriOfResource, null);
     }
 
     @Override
@@ -255,13 +265,13 @@ public abstract class AbstractTestRestTemplate<T extends IDto> implements IRestT
 
     @Override
     public final void delete(final long id) {
-        final Response deleteResponse = deleteAsResponse(getUri() + WebConstants.PATH_SEP + id);
+        final Response deleteResponse = deleteAsResponse(id);
         Preconditions.checkState(deleteResponse.getStatusCode() == 204);
     }
 
     @Override
-    public final Response deleteAsResponse(final String uriOfResource) {
-        return givenDeleteAuthenticated().delete(uriOfResource);
+    public final Response deleteAsResponse(final long id) {
+        return givenDeleteAuthenticated().delete(getUri() + WebConstants.PATH_SEP + id);
     }
 
     // count
@@ -324,7 +334,8 @@ public abstract class AbstractTestRestTemplate<T extends IDto> implements IRestT
         return auth.givenAuthenticated(credentials.getLeft(), credentials.getRight());
     }
 
-    final RequestSpecification givenDeleteAuthenticated() {
+    @Override
+    public final RequestSpecification givenDeleteAuthenticated() {
         final Pair<String, String> credentials = getWriteCredentials();
         return auth.givenAuthenticated(credentials.getLeft(), credentials.getRight());
     }

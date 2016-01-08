@@ -6,13 +6,17 @@ import org.baeldung.common.interfaces.IDto;
 import com.jayway.restassured.response.Response;
 import com.jayway.restassured.specification.RequestSpecification;
 
-public interface ITemplateAsResponse<T extends IDto> {
+public interface IRestClientAsResponse<T extends IDto> {
 
     // find - one
 
     Response findOneAsResponse(final long id, final RequestSpecification req);
 
+    Response findOneAsResponse(final long id);
+
     Response findOneByUriAsResponse(final String uriOfResource, final RequestSpecification req);
+
+    Response findOneByUriAsResponse(final String uriOfResource);
 
     // find - all
 
@@ -38,7 +42,7 @@ public interface ITemplateAsResponse<T extends IDto> {
 
     // delete
 
-    Response deleteAsResponse(final String uriOfResource);
+    Response deleteAsResponse(final long id);
 
     // count
 
