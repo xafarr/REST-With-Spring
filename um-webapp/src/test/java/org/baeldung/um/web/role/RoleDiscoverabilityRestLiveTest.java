@@ -23,7 +23,7 @@ public class RoleDiscoverabilityRestLiveTest extends UmDiscoverabilityRestLiveTe
     // template method
 
     @Override
-    protected final Role createNewEntity() {
+    protected final Role createNewResource() {
         return getEntityOps().createNewResource();
     }
 

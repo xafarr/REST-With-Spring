@@ -54,7 +54,7 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
         final String uriOfExistingResource = getApi().createAsUri(newResource);
 
         // When
-        final T createdResource = getApi().findOneByUri(uriOfExistingResource, null);
+        final T createdResource = getApi().findOneByUri(uriOfExistingResource);
 
         // Then
         assertThat(createdResource.getId(), notNullValue());
@@ -67,7 +67,7 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
         final String uriOfExistingResource = getApi().createAsUri(newResource);
 
         // When
-        final T createdResource = getApi().findOneByUri(uriOfExistingResource, null);
+        final T createdResource = getApi().findOneByUri(uriOfExistingResource);
 
         // Then
         assertEquals(createdResource, newResource);
@@ -79,7 +79,7 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
         final String uriForResourceCreation = getApi().createAsUri(createNewResource());
 
         // When
-        final Response res = getApi().findOneByUriAsResponse(uriForResourceCreation, null);
+        final Response res = getApi().read(uriForResourceCreation);
 
         // Then
         assertThat(res.getStatusCode(), is(200));
@@ -91,15 +91,11 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
         final Long id = IDUtil.randomNegativeLong();
 
         // When
-        final Response res = getApi().findOneByUriAsResponse(getUri() + WebConstants.PATH_SEP + id, null);
+        final Response res = getApi().findOneAsResponse(id);
 
         // Then
         assertThat(res.getStatusCode(), is(409));
     }
-
-    // find one - by attributes
-    // note: kept as the same tests from AbstractLogicClientRestLiveTest are
-    // still ignored (bug in RestTemplate)
 
     // create
 
@@ -268,7 +264,7 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
         final String uriForResourceCreation = getApi().createAsUri(createNewResource());
 
         // When
-        final Response res = getApi().findOneByUriAsResponse(uriForResourceCreation, null);
+        final Response res = getApi().read(uriForResourceCreation);
 
         // Then
         assertThat(res.getContentType(), StringContains.containsString(marshaller.getMime()));
