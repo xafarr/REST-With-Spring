@@ -18,7 +18,7 @@ import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
 import com.jayway.restassured.specification.RequestSpecification;
 
-public abstract class AbstractRestClient<T extends IDto> implements IRestTemplate<T> {
+public abstract class AbstractRestClient<T extends IDto> implements IRestClient<T> {
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired

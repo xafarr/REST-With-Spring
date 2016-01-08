@@ -6,7 +6,7 @@ import org.baeldung.common.interfaces.IDto;
 import com.jayway.restassured.response.Response;
 import com.jayway.restassured.specification.RequestSpecification;
 
-public interface ITemplateAsResponse<T extends IDto> {
+public interface IRestClientAsResponse<T extends IDto> {
 
     // find - one
 

@@ -16,7 +16,7 @@ import org.baeldung.client.IDtoOperations;
 import org.baeldung.client.marshall.IMarshaller;
 import org.baeldung.common.interfaces.INameableDto;
 import org.baeldung.common.web.WebConstants;
-import org.baeldung.test.common.client.template.IRestTemplate;
+import org.baeldung.test.common.client.template.IRestClient;
 import org.baeldung.test.common.util.IDUtil;
 import org.hamcrest.core.StringContains;
 import org.junit.Ignore;
@@ -272,7 +272,7 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
 
     // template method
 
-    protected abstract IRestTemplate<T> getApi();
+    protected abstract IRestClient<T> getApi();
 
     protected abstract IDtoOperations<T> getEntityOps();
 
