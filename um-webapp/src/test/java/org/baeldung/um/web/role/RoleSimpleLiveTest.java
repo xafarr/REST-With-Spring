@@ -59,7 +59,7 @@ public class RoleSimpleLiveTest {
     @Test
     public final void whenResourceIsRetrievedByNonNumericId_then400IsReceived() {
         // When
-        final Response res = getApi().findOneByUriAsResponse(getUri() + WebConstants.PATH_SEP + randomAlphabetic(6));
+        final Response res = getApi().read(getUri() + WebConstants.PATH_SEP + randomAlphabetic(6));
 
         // Then
         assertThat(res.getStatusCode(), is(400));
@@ -68,10 +68,10 @@ public class RoleSimpleLiveTest {
     @Test
     public final void givenResourceForIdExists_whenResourceOfThatIdIsRetrieved_then200IsRetrieved() {
         // Given
-        final String uriForResourceCreation = getApi().createAsUri(createNewResource());
+        final long id = getApi().create(createNewResource()).getId();
 
         // When
-        final Response res = getApi().findOneByUriAsResponse(uriForResourceCreation);
+        final Response res = getApi().findOneAsResponse(id);
 
         // Then
         assertThat(res.getStatusCode(), is(200));
@@ -79,12 +79,9 @@ public class RoleSimpleLiveTest {
 
     @Test
     public final void givenResourceExists_whenResourceIsRetrieved_thenResourceIsCorrectlyRetrieved() {
-        // Given
+        // Given, When
         final Role newResource = createNewResource();
-        final String uriOfExistingResource = getApi().createAsUri(newResource);
-
-        // When
-        final Role createdResource = getApi().findOneByUri(uriOfExistingResource);
+        final Role createdResource = getApi().create(newResource);
 
         // Then
         assertEquals(createdResource, newResource);
@@ -95,7 +92,7 @@ public class RoleSimpleLiveTest {
     @Test
     public final void whenAllResourcesAreRetrieved_then200IsReceived() {
         // When
-        final Response response = getApi().findAllAsResponse();
+        final Response response = getApi().read(getUri());
 
         // Then
         assertThat(response.getStatusCode(), is(200));
@@ -164,17 +161,6 @@ public class RoleSimpleLiveTest {
 
         // Then
         assertThat(response.getStatusCode(), is(400));
-    }
-
-    // count
-
-    @Test
-    public final void whenCountIsPerformed_then200IsReceived() {
-        // When
-        final Response response = getApi().countAsResponse();
-
-        // Then
-        assertThat(response.getStatusCode(), is(200));
     }
 
     // create
@@ -260,7 +246,7 @@ public class RoleSimpleLiveTest {
     public final void givenResourceExists_whenResourceWithSameAttributesIsCreated_then409IsReceived() {
         // Given
         final Role newResource = createNewResource();
-        getApi().createAsUri(newResource);
+        getApi().createAsResponse(newResource);
 
         // When
         final Response response = getApi().createAsResponse(newResource);
@@ -377,10 +363,10 @@ public class RoleSimpleLiveTest {
     @Test
     public final void givenRequestAcceptsMime_whenResourceIsRetrievedById_thenResponseContentTypeIsMime() {
         // Given
-        final String uriForResourceCreation = getApi().createAsUri(createNewResource());
+        final long idOfCreatedResource = getApi().create(createNewResource()).getId();
 
         // When
-        final Response res = getApi().findOneByUriAsResponse(uriForResourceCreation);
+        final Response res = getApi().findOneAsResponse(idOfCreatedResource);
 
         // Then
         assertThat(res.getContentType(), StringContains.containsString(MediaType.APPLICATION_JSON.toString()));

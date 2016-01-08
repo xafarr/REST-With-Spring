@@ -48,33 +48,20 @@ public final class RoleSimpleApiClient {
 
     public final Response findOneAsResponse(final long id) {
         final String uriOfResource = getUri() + WebConstants.PATH_SEP + id;
-        return findOneByUriAsResponse(uriOfResource);
-    }
-
-    public final Role findOneByUri(final String uriOfResource) {
-        final String resourceAsMime = findOneByUriAsString(uriOfResource);
-        return marshaller.decode(resourceAsMime, clazz);
-    }
-
-    public final Response findOneByUriAsResponse(final String uriOfResource) {
         return read(uriOfResource);
     }
 
-    private final String findOneByUriAsString(final String uriOfResource) {
-        final Response response = findOneByUriAsResponse(uriOfResource);
+    private final Role findOneByUri(final String uriOfResource) {
+        final Response response = read(uriOfResource);
         Preconditions.checkState(response.getStatusCode() == 200);
 
-        return response.asString();
+        return marshaller.decode(response.asString(), clazz);
     }
 
     // find - all
 
     public final List<Role> findAll() {
-        return findAllByUri(getUri());
-    }
-
-    public final List<Role> findAllByUri(final String uri) {
-        final Response allAsResponse = read(uri);
+        final Response allAsResponse = read(getUri());
         final List<Role> listOfResources = marshaller.<Role> decodeList(allAsResponse.getBody().asString(), clazz);
         if (listOfResources == null) {
             return Lists.newArrayList();
@@ -82,26 +69,7 @@ public final class RoleSimpleApiClient {
         return listOfResources;
     }
 
-    public final Response findAllAsResponse() {
-        return findOneByUriAsResponse(getUri());
-    }
-
     // find - all (sorted, paginated)
-
-    public final List<Role> findAllSorted(final String sortBy, final String sortOrder) {
-        final Response findAllResponse = findOneByUriAsResponse(getUri() + QueryConstants.Q_SORT_BY + sortBy + QueryConstants.S_ORDER + sortOrder);
-        return marshaller.<Role> decodeList(findAllResponse.getBody().asString(), clazz);
-    }
-
-    public final List<Role> findAllPaginated(final int page, final int size) {
-        final Response allPaginatedAsResponse = findAllPaginatedAsResponse(page, size);
-        return getMarshaller().decodeList(allPaginatedAsResponse.asString(), clazz);
-    }
-
-    public final List<Role> findAllPaginatedAndSorted(final int page, final int size, final String sortBy, final String sortOrder) {
-        final Response allPaginatedAndSortedAsResponse = findAllPaginatedAndSortedAsResponse(page, size, sortBy, sortOrder);
-        return getMarshaller().decodeList(allPaginatedAndSortedAsResponse.asString(), clazz);
-    }
 
     public final Response findAllPaginatedAndSortedAsResponse(final int page, final int size, final String sortBy, final String sortOrder) {
         final StringBuilder uri = new StringBuilder(getUri());
@@ -123,7 +91,7 @@ public final class RoleSimpleApiClient {
             uri.append(sortOrder);
         }
 
-        return findOneByUriAsResponse(uri.toString());
+        return read(uri.toString());
     }
 
     public final Response findAllSortedAsResponse(final String sortBy, final String sortOrder) {
@@ -140,7 +108,7 @@ public final class RoleSimpleApiClient {
             uri.append(sortOrder);
         }
 
-        return findOneByUriAsResponse(uri.toString());
+        return read(uri.toString());
     }
 
     public final Response findAllPaginatedAsResponse(final int page, final int size) {
@@ -151,23 +119,18 @@ public final class RoleSimpleApiClient {
         uri.append(QueryConstants.SEPARATOR_AMPER);
         uri.append("size=");
         uri.append(size);
-        return findOneByUriAsResponse(uri.toString());
+        return read(uri.toString());
     }
 
     // create
 
     public final Role create(final Role resource) {
-        final String uriForResourceCreation = createAsUri(resource);
-        return findOneByUri(uriForResourceCreation);
-    }
-
-    public final String createAsUri(final Role resource) {
         final Response response = createAsResponse(resource);
         Preconditions.checkState(response.getStatusCode() == 201, "create operation: " + response.getStatusCode());
 
         final String locationOfCreatedResource = response.getHeader(HttpHeaders.LOCATION);
         Preconditions.checkNotNull(locationOfCreatedResource);
-        return locationOfCreatedResource;
+        return findOneByUri(locationOfCreatedResource);
     }
 
     public final Response createAsResponse(final Role resource) {
@@ -201,16 +164,6 @@ public final class RoleSimpleApiClient {
         return givenAuthenticated().delete(getUri() + WebConstants.PATH_SEP + id);
     }
 
-    // count
-
-    public final long count() {
-        return Long.valueOf(countAsResponse().asString());
-    }
-
-    public final Response countAsResponse() {
-        return givenAuthenticated().get(getUri() + "/count");
-    }
-
     // API - other
 
     public final String getUri() {
@@ -234,10 +187,6 @@ public final class RoleSimpleApiClient {
 
     private final RequestSpecification readRequest(final RequestSpecification req) {
         return req.header(HttpHeaders.ACCEPT, JSON);
-    }
-
-    private final IMarshaller getMarshaller() {
-        return marshaller;
     }
 
     private final Pair<String, String> getDefaultCredentials() {
