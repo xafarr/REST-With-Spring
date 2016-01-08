@@ -59,7 +59,7 @@ public class RoleSimpleLiveTest {
     @Test
     public final void whenResourceIsRetrievedByNonNumericId_then400IsReceived() {
         // When
-        final Response res = getApi().findByUriAsResponse(getUri() + WebConstants.PATH_SEP + randomAlphabetic(6));
+        final Response res = getApi().findOneByUriAsResponse(getUri() + WebConstants.PATH_SEP + randomAlphabetic(6));
 
         // Then
         assertThat(res.getStatusCode(), is(400));
@@ -71,7 +71,7 @@ public class RoleSimpleLiveTest {
         final String uriForResourceCreation = getApi().createAsUri(createNewResource());
 
         // When
-        final Response res = getApi().findByUriAsResponse(uriForResourceCreation);
+        final Response res = getApi().findOneByUriAsResponse(uriForResourceCreation);
 
         // Then
         assertThat(res.getStatusCode(), is(200));
@@ -332,10 +332,10 @@ public class RoleSimpleLiveTest {
     @Test
     public final void givenResourceExists_whenResourceIsDeleted_then204IsReceived() {
         // Given
-        final String uriForResourceCreation = getApi().createAsUri(createNewResource());
+        final long idOfResource = getApi().create(createNewResource()).getId();
 
         // When
-        final Response response = getApi().deleteAsResponse(uriForResourceCreation);
+        final Response response = getApi().deleteAsResponse(idOfResource);
 
         // Then
         assertThat(response.getStatusCode(), is(204));
@@ -344,7 +344,7 @@ public class RoleSimpleLiveTest {
     @Test
     public final void whenResourceIsDeletedByIncorrectNonNumericId_then400IsReceived() {
         // When
-        final Response response = getApi().deleteAsResponse(getUri() + randomAlphabetic(6));
+        final Response response = getApi().givenAuthenticated().delete(getUri() + randomAlphabetic(6));
 
         // Then
         assertThat(response.getStatusCode(), is(400));
@@ -353,7 +353,7 @@ public class RoleSimpleLiveTest {
     @Test
     public final void givenResourceDoesNotExist_whenResourceIsDeleted_then404IsReceived() {
         // When
-        final Response response = getApi().deleteAsResponse(getUri() + randomNumeric(6));
+        final Response response = getApi().deleteAsResponse(Long.parseLong(randomNumeric(6)));
 
         // Then
         assertThat(response.getStatusCode(), is(404));
@@ -362,11 +362,11 @@ public class RoleSimpleLiveTest {
     @Test
     public final void givenResourceExistedAndWasDeleted_whenRetrievingResource_then404IsReceived() {
         // Given
-        final String uriOfResource = getApi().createAsUri(createNewResource());
-        getApi().deleteAsResponse(uriOfResource);
+        final long idOfResource = getApi().create(createNewResource()).getId();
+        getApi().deleteAsResponse(idOfResource);
 
         // When
-        final Response getResponse = getApi().findByUriAsResponse(uriOfResource);
+        final Response getResponse = getApi().findOneAsResponse(idOfResource);
 
         // Then
         assertThat(getResponse.getStatusCode(), is(404));
@@ -380,7 +380,7 @@ public class RoleSimpleLiveTest {
         final String uriForResourceCreation = getApi().createAsUri(createNewResource());
 
         // When
-        final Response res = getApi().findByUriAsResponse(uriForResourceCreation);
+        final Response res = getApi().findOneByUriAsResponse(uriForResourceCreation);
 
         // Then
         assertThat(res.getContentType(), StringContains.containsString(MediaType.APPLICATION_JSON.toString()));

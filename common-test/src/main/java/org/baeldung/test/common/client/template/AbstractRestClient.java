@@ -290,13 +290,13 @@ public abstract class AbstractRestClient<T extends IDto> implements IRestTemplat
 
     @Override
     public final void delete(final long id) {
-        final Response deleteResponse = deleteAsResponse(getUri() + WebConstants.PATH_SEP + id);
+        final Response deleteResponse = deleteAsResponse(id);
         Preconditions.checkState(deleteResponse.getStatusCode() == 204);
     }
 
     @Override
-    public final Response deleteAsResponse(final String uriOfResource) {
-        return givenDeleteAuthenticated().delete(uriOfResource);
+    public final Response deleteAsResponse(final long id) {
+        return givenDeleteAuthenticated().delete(getUri() + WebConstants.PATH_SEP + id);
     }
 
     // count
@@ -351,7 +351,8 @@ public abstract class AbstractRestClient<T extends IDto> implements IRestTemplat
         return RestAssured.given().auth().preemptive().basic(credentials.getLeft(), credentials.getRight());
     }
 
-    final RequestSpecification givenDeleteAuthenticated() {
+    @Override
+    public final RequestSpecification givenDeleteAuthenticated() {
         final Pair<String, String> credentials = getWriteCredentials();
         return RestAssured.given().auth().preemptive().basic(credentials.getLeft(), credentials.getRight());
     }

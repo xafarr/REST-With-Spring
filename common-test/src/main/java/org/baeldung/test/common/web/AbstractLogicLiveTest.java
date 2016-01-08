@@ -216,7 +216,7 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
     @Test
     /* code */public void whenResourceIsDeletedByIncorrectNonNumericId_then400IsReceived() {
         // When
-        final Response response = getApi().deleteAsResponse(getUri() + randomAlphabetic(6));
+        final Response response = getApi().givenDeleteAuthenticated().delete(getUri() + randomAlphabetic(6));
 
         // Then
         assertThat(response.getStatusCode(), is(400));
@@ -225,7 +225,7 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
     @Test
     /* code */public void givenResourceDoesNotExist_whenResourceIsDeleted_then404IsReceived() {
         // When
-        final Response response = getApi().deleteAsResponse(getUri() + randomNumeric(6));
+        final Response response = getApi().deleteAsResponse(Long.parseLong(randomNumeric(6)));
 
         // Then
         assertThat(response.getStatusCode(), is(404));
@@ -234,10 +234,10 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
     @Test
     /* code */public void givenResourceExists_whenResourceIsDeleted_then204IsReceived() {
         // Given
-        final String uriForResourceCreation = getApi().createAsUri(createNewResource());
+        final long id = getApi().create(createNewResource()).getId();
 
         // When
-        final Response response = getApi().deleteAsResponse(uriForResourceCreation);
+        final Response response = getApi().deleteAsResponse(id);
 
         // Then
         assertThat(response.getStatusCode(), is(204));
@@ -246,11 +246,11 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
     @Test
     /* code */public void givenResourceExistedAndWasDeleted_whenRetrievingResource_then404IsReceived() {
         // Given
-        final String uriOfResource = getApi().createAsUri(createNewResource());
-        getApi().deleteAsResponse(uriOfResource);
+        final long idOfResource = getApi().create(createNewResource()).getId();
+        getApi().deleteAsResponse(idOfResource);
 
         // When
-        final Response getResponse = getApi().findOneByUriAsResponse(uriOfResource, null);
+        final Response getResponse = getApi().findOneAsResponse(idOfResource);
 
         // Then
         assertThat(getResponse.getStatusCode(), is(404));

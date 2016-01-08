@@ -43,7 +43,7 @@ public abstract class AbstractSimpleRestClient<T extends IDto> {
 
     public final Response findOneAsResponse(final long id) {
         final String uriOfResource = getUri() + WebConstants.PATH_SEP + id;
-        return findByUriAsResponse(uriOfResource);
+        return findOneByUriAsResponse(uriOfResource);
     }
 
     public final T findOneByUri(final String uriOfResource) {
@@ -52,13 +52,13 @@ public abstract class AbstractSimpleRestClient<T extends IDto> {
     }
 
     public final String findOneByUriAsString(final String uriOfResource) {
-        final Response response = findByUriAsResponse(uriOfResource);
+        final Response response = findOneByUriAsResponse(uriOfResource);
         Preconditions.checkState(response.getStatusCode() == 200);
 
         return response.asString();
     }
 
-    public final Response findByUriAsResponse(final String uriOfResource) {
+    public final Response findOneByUriAsResponse(final String uriOfResource) {
         return read(uriOfResource);
     }
 
@@ -78,13 +78,13 @@ public abstract class AbstractSimpleRestClient<T extends IDto> {
     }
 
     public final Response findAllAsResponse() {
-        return findByUriAsResponse(getUri());
+        return findOneByUriAsResponse(getUri());
     }
 
     // find - all (sorted, paginated)
 
     public final List<T> findAllSorted(final String sortBy, final String sortOrder) {
-        final Response findAllResponse = findByUriAsResponse(getUri() + QueryConstants.Q_SORT_BY + sortBy + QueryConstants.S_ORDER + sortOrder);
+        final Response findAllResponse = findOneByUriAsResponse(getUri() + QueryConstants.Q_SORT_BY + sortBy + QueryConstants.S_ORDER + sortOrder);
         return marshaller.<T> decodeList(findAllResponse.getBody().asString(), clazz);
     }
 
@@ -118,7 +118,7 @@ public abstract class AbstractSimpleRestClient<T extends IDto> {
             uri.append(sortOrder);
         }
 
-        return findByUriAsResponse(uri.toString());
+        return findOneByUriAsResponse(uri.toString());
     }
 
     public final Response findAllSortedAsResponse(final String sortBy, final String sortOrder) {
@@ -135,7 +135,7 @@ public abstract class AbstractSimpleRestClient<T extends IDto> {
             uri.append(sortOrder);
         }
 
-        return findByUriAsResponse(uri.toString());
+        return findOneByUriAsResponse(uri.toString());
     }
 
     public final Response findAllPaginatedAsResponse(final int page, final int size) {
@@ -146,7 +146,7 @@ public abstract class AbstractSimpleRestClient<T extends IDto> {
         uri.append(QueryConstants.SEPARATOR_AMPER);
         uri.append("size=");
         uri.append(size);
-        return findByUriAsResponse(uri.toString());
+        return findOneByUriAsResponse(uri.toString());
     }
 
     // create

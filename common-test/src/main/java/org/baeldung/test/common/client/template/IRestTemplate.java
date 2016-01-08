@@ -14,6 +14,8 @@ public interface IRestTemplate<T extends IDto> extends IOperations<T>, ITemplate
 
     RequestSpecification givenReadAuthenticated();
 
+    RequestSpecification givenDeleteAuthenticated();
+
     IMarshaller getMarshaller();
 
     String getUri();

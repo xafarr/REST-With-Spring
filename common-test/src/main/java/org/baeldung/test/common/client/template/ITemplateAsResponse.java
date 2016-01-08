@@ -50,7 +50,7 @@ public interface ITemplateAsResponse<T extends IDto> {
 
     // delete
 
-    Response deleteAsResponse(final String uriOfResource);
+    Response deleteAsResponse(final long id);
 
     // count
 
