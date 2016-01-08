@@ -19,6 +19,7 @@ import org.baeldung.common.web.WebConstants;
 import org.baeldung.test.common.client.template.IRestClient;
 import org.baeldung.test.common.util.IDUtil;
 import org.hamcrest.core.StringContains;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
@@ -53,7 +54,7 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
         final String uriOfExistingResource = getApi().createAsUri(newResource);
 
         // When
-        final T createdResource = getApi().findOneByUri(uriOfExistingResource, null);
+        final T createdResource = getApi().findOneByUri(uriOfExistingResource);
 
         // Then
         assertThat(createdResource.getId(), notNullValue());
@@ -66,7 +67,7 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
         final String uriOfExistingResource = getApi().createAsUri(newResource);
 
         // When
-        final T createdResource = getApi().findOneByUri(uriOfExistingResource, null);
+        final T createdResource = getApi().findOneByUri(uriOfExistingResource);
 
         // Then
         assertEquals(createdResource, newResource);
@@ -78,10 +79,22 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
         final String uriForResourceCreation = getApi().createAsUri(createNewResource());
 
         // When
-        final Response res = getApi().findOneByUriAsResponse(uriForResourceCreation, null);
+        final Response res = getApi().read(uriForResourceCreation);
 
         // Then
         assertThat(res.getStatusCode(), is(200));
+    }
+
+    @Test
+    @Ignore("this was written for a neo4j persistence engine, which treats null ids differently than Hibernate")
+    /* code */public void whenResourceIsRetrievedByNegativeId_then409IsReceived() {
+        final Long id = IDUtil.randomNegativeLong();
+
+        // When
+        final Response res = getApi().findOneAsResponse(id);
+
+        // Then
+        assertThat(res.getStatusCode(), is(409));
     }
 
     // create
@@ -98,7 +111,7 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
     @Test
     /* code */public void whenResourceWithUnsupportedMediaTypeIsCreated_then415IsReceived() {
         // When
-        final Response response = givenReadAuthenticated().contentType("unknown/unknown").post(getUri());
+        final Response response = givenReadAuthenticated().contentType("unknown").post(getUri());
 
         // Then
         assertThat(response.getStatusCode(), is(415));
@@ -126,6 +139,7 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
     }
 
     @Test
+    @Ignore("this will not always pass at this time")
     /* code */public void givenResourceExists_whenResourceWithSameAttributesIsCreated_then409IsReceived() {
         // Given
         final T newEntity = createNewResource();
@@ -250,7 +264,7 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
         final String uriForResourceCreation = getApi().createAsUri(createNewResource());
 
         // When
-        final Response res = getApi().findOneByUriAsResponse(uriForResourceCreation, null);
+        final Response res = getApi().read(uriForResourceCreation);
 
         // Then
         assertThat(res.getContentType(), StringContains.containsString(marshaller.getMime()));
