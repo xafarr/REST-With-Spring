@@ -1,6 +1,5 @@
 package org.baeldung.test.common.client.template;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.baeldung.client.marshall.IMarshaller;
 import org.baeldung.client.template.IRestClientWithUri;
 import org.baeldung.common.interfaces.IDto;
@@ -19,9 +18,5 @@ public interface IRestClient<T extends IDto> extends IOperations<T>, IRestClient
     IMarshaller getMarshaller();
 
     String getUri();
-
-    // util
-
-    Pair<String, String> getReadCredentials();
 
 }

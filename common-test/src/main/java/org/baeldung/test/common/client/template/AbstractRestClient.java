@@ -8,13 +8,13 @@ import org.baeldung.client.marshall.IMarshaller;
 import org.baeldung.common.interfaces.IDto;
 import org.baeldung.common.util.QueryConstants;
 import org.baeldung.common.web.WebConstants;
+import org.baeldung.test.common.client.security.ITestAuthenticator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
 import com.jayway.restassured.specification.RequestSpecification;
 
@@ -23,6 +23,9 @@ public abstract class AbstractRestClient<T extends IDto> implements IRestClient<
 
     @Autowired
     protected IMarshaller marshaller;
+
+    @Autowired
+    protected ITestAuthenticator auth;
 
     protected final Class<T> clazz;
 
@@ -44,19 +47,13 @@ public abstract class AbstractRestClient<T extends IDto> implements IRestClient<
         return findOneAsResponse(id, null);
     }
 
-    @Override
-    public final Response findOneAsResponse(final long id, final RequestSpecification req) {
+    final Response findOneAsResponse(final long id, final RequestSpecification req) {
         final String uriOfResource = getUri() + WebConstants.PATH_SEP + id;
         return findOneByUriAsResponse(uriOfResource, req);
     }
 
-    public final T findOneByUri(final String uriOfResource) {
-        final String resourceAsMime = findOneByUriAsString(uriOfResource);
-        return marshaller.decode(resourceAsMime, clazz);
-    }
-
     @Override
-    public final T findOneByUri(final String uriOfResource, final Pair<String, String> credentials) {
+    public final T findOneByUri(final String uriOfResource) {
         final String resourceAsMime = findOneByUriAsString(uriOfResource);
         return marshaller.decode(resourceAsMime, clazz);
     }
@@ -75,8 +72,7 @@ public abstract class AbstractRestClient<T extends IDto> implements IRestClient<
         return response.asString();
     }
 
-    @Override
-    public final Response findOneByUriAsResponse(final String uriOfResource) {
+    final Response findOneByUriAsResponse(final String uriOfResource) {
         return findOneByUriAsResponse(uriOfResource, null);
     }
 
@@ -88,31 +84,26 @@ public abstract class AbstractRestClient<T extends IDto> implements IRestClient<
         return readRequest(req).get(uriOfResource);
     }
 
-    @Override
-    public final Response findAllByUriAsResponse(final String uriOfResource, final RequestSpecification req) {
+    // find - all
+
+    final Response findAllByUriAsResponse(final String uriOfResource, final RequestSpecification req) {
         if (req == null) {
             return readExtendedRequest().get(uriOfResource);
         }
         return readExtendedRequest(req).get(uriOfResource);
     }
 
-    public final Response findAllByUriAsResponse(final String uriOfResource) {
+    final Response findAllByUriAsResponse(final String uriOfResource) {
         return findAllByUriAsResponse(uriOfResource, null);
     }
-
-    // find - all
 
     @Override
     public List<T> findAll() {
         return findAllByUri(getUri());
     }
 
-    public final List<T> findAllByUri(final String uri) {
-        return findAllByUri(uri, null);
-    }
-
     @Override
-    public final List<T> findAllByUri(final String uri, final Pair<String, String> credentials) {
+    public final List<T> findAllByUri(final String uri) {
         final Response allAsResponse = readExtendedRequest().get(uri);
         final List<T> listOfResources = marshaller.<T> decodeList(allAsResponse.getBody().asString(), clazz);
         if (listOfResources == null) {
@@ -121,7 +112,6 @@ public abstract class AbstractRestClient<T extends IDto> implements IRestClient<
         return listOfResources;
     }
 
-    @Override
     public final Response findAllAsResponse() {
         return findAllAsResponse(null);
     }
@@ -156,8 +146,7 @@ public abstract class AbstractRestClient<T extends IDto> implements IRestClient<
         return findAllPaginatedAndSortedAsResponse(page, size, sortBy, sortOrder, null);
     }
 
-    @Override
-    public final Response findAllPaginatedAndSortedAsResponse(final int page, final int size, final String sortBy, final String sortOrder, final RequestSpecification req) {
+    final Response findAllPaginatedAndSortedAsResponse(final int page, final int size, final String sortBy, final String sortOrder, final RequestSpecification req) {
         final StringBuilder uri = new StringBuilder(getUri());
         uri.append(QueryConstants.QUESTIONMARK);
         uri.append("page=");
@@ -185,8 +174,7 @@ public abstract class AbstractRestClient<T extends IDto> implements IRestClient<
         return findAllSortedAsResponse(sortBy, sortOrder, null);
     }
 
-    @Override
-    public final Response findAllSortedAsResponse(final String sortBy, final String sortOrder, final RequestSpecification req) {
+    final Response findAllSortedAsResponse(final String sortBy, final String sortOrder, final RequestSpecification req) {
         final StringBuilder uri = new StringBuilder(getUri());
         uri.append(QueryConstants.QUESTIONMARK);
         Preconditions.checkState(!(sortBy == null && sortOrder != null));
@@ -208,8 +196,7 @@ public abstract class AbstractRestClient<T extends IDto> implements IRestClient<
         return findAllPaginatedAsResponse(page, size, null);
     }
 
-    @Override
-    public final Response findAllPaginatedAsResponse(final int page, final int size, final RequestSpecification req) {
+    final Response findAllPaginatedAsResponse(final int page, final int size, final RequestSpecification req) {
         final StringBuilder uri = new StringBuilder(getUri());
         uri.append(QueryConstants.QUESTIONMARK);
         uri.append("page=");
@@ -235,8 +222,7 @@ public abstract class AbstractRestClient<T extends IDto> implements IRestClient<
         return createAsUri(resource, null);
     }
 
-    @Override
-    public final String createAsUri(final T resource, final Pair<String, String> credentials) {
+    final String createAsUri(final T resource, final Pair<String, String> credentials) {
         final Response response = createAsResponse(resource, credentials);
         Preconditions.checkState(response.getStatusCode() == 201, "create operation: " + response.getStatusCode());
 
@@ -255,7 +241,7 @@ public abstract class AbstractRestClient<T extends IDto> implements IRestClient<
         Preconditions.checkNotNull(resource);
         RequestSpecification givenAuthenticated = null;
         if (credentials != null) {
-            givenAuthenticated = RestAssured.given().auth().preemptive().basic(credentials.getLeft(), credentials.getRight());
+            givenAuthenticated = auth.givenBasicAuthenticated(credentials.getLeft(), credentials.getRight());
         } else {
             givenAuthenticated = givenWriteAuthenticated();
         }
@@ -302,7 +288,7 @@ public abstract class AbstractRestClient<T extends IDto> implements IRestClient<
     // count
 
     @Override
-    public final long count() {
+    public long count() {
         return Long.valueOf(countAsResponse().asString());
     }
 
@@ -313,6 +299,7 @@ public abstract class AbstractRestClient<T extends IDto> implements IRestClient<
 
     // API - other
 
+    @Override
     public final Response read(final String uriOfResource) {
         return readRequest().get(uriOfResource);
     }
@@ -338,23 +325,23 @@ public abstract class AbstractRestClient<T extends IDto> implements IRestClient<
     @Override
     public final RequestSpecification givenReadAuthenticated() {
         final Pair<String, String> credentials = getReadCredentials();
-        return RestAssured.given().auth().preemptive().basic(credentials.getLeft(), credentials.getRight());
+        return auth.givenBasicAuthenticated(credentials.getLeft(), credentials.getRight());
     }
 
     final RequestSpecification givenReadExtendedAuthenticated() {
         final Pair<String, String> credentials = getReadExtendedCredentials();
-        return RestAssured.given().auth().preemptive().basic(credentials.getLeft(), credentials.getRight());
+        return auth.givenBasicAuthenticated(credentials.getLeft(), credentials.getRight());
     }
 
     final RequestSpecification givenWriteAuthenticated() {
         final Pair<String, String> credentials = getWriteCredentials();
-        return RestAssured.given().auth().preemptive().basic(credentials.getLeft(), credentials.getRight());
+        return auth.givenBasicAuthenticated(credentials.getLeft(), credentials.getRight());
     }
 
     @Override
     public final RequestSpecification givenDeleteAuthenticated() {
         final Pair<String, String> credentials = getWriteCredentials();
-        return RestAssured.given().auth().preemptive().basic(credentials.getLeft(), credentials.getRight());
+        return auth.givenBasicAuthenticated(credentials.getLeft(), credentials.getRight());
     }
 
     protected Pair<String, String> getWriteCredentials() {
@@ -365,8 +352,7 @@ public abstract class AbstractRestClient<T extends IDto> implements IRestClient<
         return getWriteCredentials();
     }
 
-    @Override
-    public Pair<String, String> getReadCredentials() {
+    Pair<String, String> getReadCredentials() {
         return getDefaultCredentials();
     }
 

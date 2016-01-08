@@ -45,8 +45,11 @@ public abstract class AbstractReadOnlyLogicLiveTest<T extends INameableDto> {
 
     @Test
     /*code*/public void whenResourceIsRetrievedByNonNumericId_then400IsReceived() {
+        // Given id is non numeric
+        final String id = randomAlphabetic(6);
+
         // When
-        final Response res = getApi().findOneByUriAsResponse(getUri() + WebConstants.PATH_SEP + randomAlphabetic(6));
+        final Response res = getApi().read(getUri() + WebConstants.PATH_SEP + id);
 
         // Then
         assertThat(res.getStatusCode(), is(400));
@@ -57,7 +60,7 @@ public abstract class AbstractReadOnlyLogicLiveTest<T extends INameableDto> {
     @Test
     /*code*/public final void whenAllResourcesAreRetrieved_then200IsReceived() {
         // When
-        final Response response = getApi().findAllAsResponse();
+        final Response response = getApi().findAllAsResponse(null);
 
         // Then
         assertThat(response.getStatusCode(), is(200));
@@ -88,6 +91,7 @@ public abstract class AbstractReadOnlyLogicLiveTest<T extends INameableDto> {
     /*code*/public final void whenResourcesAreRetrievedWithNonNumericPage_then400IsReceived() {
         // When
         final Response response = givenReadAuthenticated().get(getUri() + "?page=" + randomAlphabetic(5).toLowerCase() + "&size=1");
+
         // Then
         assertThat(response.getStatusCode(), is(400));
     }

@@ -54,7 +54,7 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
         final String uriOfExistingResource = getApi().createAsUri(newResource);
 
         // When
-        final T createdResource = getApi().findOneByUri(uriOfExistingResource, null);
+        final T createdResource = getApi().findOneByUri(uriOfExistingResource);
 
         // Then
         assertThat(createdResource.getId(), notNullValue());
@@ -67,7 +67,7 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
         final String uriOfExistingResource = getApi().createAsUri(newResource);
 
         // When
-        final T createdResource = getApi().findOneByUri(uriOfExistingResource, null);
+        final T createdResource = getApi().findOneByUri(uriOfExistingResource);
 
         // Then
         assertEquals(createdResource, newResource);
@@ -79,7 +79,7 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
         final String uriForResourceCreation = getApi().createAsUri(createNewResource());
 
         // When
-        final Response res = getApi().findOneByUriAsResponse(uriForResourceCreation, null);
+        final Response res = getApi().read(uriForResourceCreation);
 
         // Then
         assertThat(res.getStatusCode(), is(200));
@@ -91,7 +91,7 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
         final Long id = IDUtil.randomNegativeLong();
 
         // When
-        final Response res = getApi().findOneByUriAsResponse(getUri() + WebConstants.PATH_SEP + id, null);
+        final Response res = getApi().findOneAsResponse(id);
 
         // Then
         assertThat(res.getStatusCode(), is(409));
@@ -142,11 +142,11 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
     @Ignore("this will not always pass at this time")
     /* code */public void givenResourceExists_whenResourceWithSameAttributesIsCreated_then409IsReceived() {
         // Given
-        final T newResource = createNewResource();
-        getApi().createAsUri(newResource);
+        final T newEntity = createNewResource();
+        getApi().createAsUri(newEntity);
 
         // When
-        final Response response = getApi().createAsResponse(newResource);
+        final Response response = getApi().createAsResponse(newEntity);
 
         // Then
         assertThat(response.getStatusCode(), is(409));
@@ -201,11 +201,11 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
     @Test
     /* code */public void givenResourceDoesNotExist_whenResourceIsUpdated_then404IsReceived() {
         // Given
-        final T unpersistedResource = createNewResource();
-        unpersistedResource.setId(IDUtil.randomPositiveLong());
+        final T unpersistedEntity = createNewResource();
+        unpersistedEntity.setId(IDUtil.randomPositiveLong());
 
         // When
-        final Response response = getApi().updateAsResponse(unpersistedResource);
+        final Response response = getApi().updateAsResponse(unpersistedEntity);
 
         // Then
         assertThat(response.getStatusCode(), is(404));
@@ -264,7 +264,7 @@ public abstract class AbstractLogicLiveTest<T extends INameableDto> {
         final String uriForResourceCreation = getApi().createAsUri(createNewResource());
 
         // When
-        final Response res = getApi().findOneByUriAsResponse(uriForResourceCreation, null);
+        final Response res = getApi().read(uriForResourceCreation);
 
         // Then
         assertThat(res.getContentType(), StringContains.containsString(marshaller.getMime()));

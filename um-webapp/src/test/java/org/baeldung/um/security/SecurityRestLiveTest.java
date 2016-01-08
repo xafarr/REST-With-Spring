@@ -30,7 +30,7 @@ import com.jayway.restassured.specification.RequestSpecification;
 public class SecurityRestLiveTest {
 
     @Autowired
-    private UserRestClient userTemplate;
+    private UserRestClient userClient;
 
     @Autowired
     private UserDtoOpsImpl userOps;
@@ -42,7 +42,7 @@ public class SecurityRestLiveTest {
     @Test
     public final void givenUnauthenticated_whenAResourceIsDeleted_then401IsReceived() {
         // Given
-        final String uriOfExistingResource = userTemplate.createAsUri(userOps.createNewResource(), null);
+        final String uriOfExistingResource = userClient.createAsUri(userOps.createNewResource());
 
         // When
         final Response response = given().delete(uriOfExistingResource);
@@ -57,7 +57,7 @@ public class SecurityRestLiveTest {
     public final void givenAuthenticatedByBasicAuth_whenResourceIsCreated_then201IsReceived() {
         // Given
         // When
-        final Response response = givenAuthenticated().contentType(userTemplate.getMarshaller().getMime()).body(userOps.createNewResource()).post(userTemplate.getUri());
+        final Response response = givenAuthenticated().contentType(userClient.getMarshaller().getMime()).body(userOps.createNewResource()).post(userClient.getUri());
 
         // Then
         assertThat(response.getStatusCode(), is(201));
@@ -68,7 +68,7 @@ public class SecurityRestLiveTest {
     public final void givenAuthenticatedByDigestAuth_whenResourceIsCreated_then201IsReceived() {
         // Given
         // When
-        final Response response = givenAuthenticated().contentType(userTemplate.getMarshaller().getMime()).body(userOps.createNewResource()).post(userTemplate.getUri());
+        final Response response = givenAuthenticated().contentType(userClient.getMarshaller().getMime()).body(userOps.createNewResource()).post(userClient.getUri());
 
         // Then
         assertThat(response.getStatusCode(), is(201));
