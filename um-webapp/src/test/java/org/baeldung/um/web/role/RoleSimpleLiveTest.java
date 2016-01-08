@@ -20,6 +20,7 @@ import org.baeldung.um.persistence.model.Role;
 import org.baeldung.um.spring.CommonTestConfig;
 import org.baeldung.um.spring.UmClientConfig;
 import org.baeldung.um.spring.UmLiveTestConfig;
+import org.baeldung.um.util.Um;
 import org.hamcrest.core.StringContains;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,6 +33,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import com.google.common.collect.Sets;
+import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
 import com.jayway.restassured.specification.RequestSpecification;
 
@@ -57,7 +59,7 @@ public class RoleSimpleLiveTest {
     @Test
     public final void whenResourceIsRetrievedByNonNumericId_then400IsReceived() {
         // When
-        final Response res = getApi().findOneByUriAsResponse(getUri() + WebConstants.PATH_SEP + randomAlphabetic(6));
+        final Response res = getApi().read(getUri() + WebConstants.PATH_SEP + randomAlphabetic(6));
 
         // Then
         assertThat(res.getStatusCode(), is(400));
@@ -66,10 +68,10 @@ public class RoleSimpleLiveTest {
     @Test
     public final void givenResourceForIdExists_whenResourceOfThatIdIsRetrieved_then200IsRetrieved() {
         // Given
-        final String uriForResourceCreation = getApi().createAsUri(createNewResource());
+        final long id = getApi().create(createNewResource()).getId();
 
         // When
-        final Response res = getApi().findOneByUriAsResponse(uriForResourceCreation);
+        final Response res = getApi().findOneAsResponse(id);
 
         // Then
         assertThat(res.getStatusCode(), is(200));
@@ -77,12 +79,9 @@ public class RoleSimpleLiveTest {
 
     @Test
     public final void givenResourceExists_whenResourceIsRetrieved_thenResourceIsCorrectlyRetrieved() {
-        // Given
+        // Given, When
         final Role newResource = createNewResource();
-        final String uriOfExistingResource = getApi().createAsUri(newResource);
-
-        // When
-        final Role createdResource = getApi().findOneByUri(uriOfExistingResource);
+        final Role createdResource = getApi().create(newResource);
 
         // Then
         assertEquals(createdResource, newResource);
@@ -93,7 +92,7 @@ public class RoleSimpleLiveTest {
     @Test
     public final void whenAllResourcesAreRetrieved_then200IsReceived() {
         // When
-        final Response response = getApi().findAllAsResponse();
+        final Response response = getApi().read(getUri());
 
         // Then
         assertThat(response.getStatusCode(), is(200));
@@ -164,17 +163,6 @@ public class RoleSimpleLiveTest {
         assertThat(response.getStatusCode(), is(400));
     }
 
-    // count
-
-    @Test
-    public final void whenCountIsPerformed_then200IsReceived() {
-        // When
-        final Response response = getApi().countAsResponse();
-
-        // Then
-        assertThat(response.getStatusCode(), is(200));
-    }
-
     // create
 
     @Test
@@ -227,7 +215,7 @@ public class RoleSimpleLiveTest {
     @Test
     public final void whenResourceWithUnsupportedMediaTypeIsCreated_then415IsReceived() {
         // When
-        final Response response = givenAuthenticated().contentType("unknown/unknown").post(getUri());
+        final Response response = givenAuthenticated().contentType("unknown").post(getUri());
 
         // Then
         assertThat(response.getStatusCode(), is(415));
@@ -258,7 +246,7 @@ public class RoleSimpleLiveTest {
     public final void givenResourceExists_whenResourceWithSameAttributesIsCreated_then409IsReceived() {
         // Given
         final Role newResource = createNewResource();
-        getApi().createAsUri(newResource);
+        getApi().createAsResponse(newResource);
 
         // When
         final Response response = getApi().createAsResponse(newResource);
@@ -328,11 +316,12 @@ public class RoleSimpleLiveTest {
     // delete
 
     @Test
-    public final void givenResourceExists_whenResourceIsDeleted_then204IsReceived() {// Given
-        final long id = getApi().create(createNewResource()).getId();
+    public final void givenResourceExists_whenResourceIsDeleted_then204IsReceived() {
+        // Given
+        final long idOfResource = getApi().create(createNewResource()).getId();
 
         // When
-        final Response response = getApi().deleteAsResponse(id);
+        final Response response = getApi().deleteAsResponse(idOfResource);
 
         // Then
         assertThat(response.getStatusCode(), is(204));
@@ -374,10 +363,10 @@ public class RoleSimpleLiveTest {
     @Test
     public final void givenRequestAcceptsMime_whenResourceIsRetrievedById_thenResponseContentTypeIsMime() {
         // Given
-        final String uriForResourceCreation = getApi().createAsUri(createNewResource());
+        final long idOfCreatedResource = getApi().create(createNewResource()).getId();
 
         // When
-        final Response res = getApi().findOneByUriAsResponse(uriForResourceCreation);
+        final Response res = getApi().findOneAsResponse(idOfCreatedResource);
 
         // Then
         assertThat(res.getContentType(), StringContains.containsString(MediaType.APPLICATION_JSON.toString()));
@@ -394,7 +383,7 @@ public class RoleSimpleLiveTest {
     }
 
     private final RequestSpecification givenAuthenticated() {
-        return getApi().givenAuthenticated();
+        return RestAssured.given().auth().preemptive().basic(Um.ADMIN_EMAIL, Um.ADMIN_PASS);
     }
 
     private final Privilege createNewAssociationResource() {
