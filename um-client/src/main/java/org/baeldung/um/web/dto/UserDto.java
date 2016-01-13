@@ -62,6 +62,7 @@ public class UserDto implements INameableEntity, INameableDto {
         return name;
     }
 
+    @Override
     public void setName(final String nameToSet) {
         name = nameToSet;
     }
