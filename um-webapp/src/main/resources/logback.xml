@@ -7,14 +7,6 @@
 		</encoder>
 	</appender>
 
-	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
-		<file>/var/log/restsec/restwithspring.log</file>
-		<encoder>
-			<pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n
-			</pattern>
-		</encoder>
-	</appender>
-
 	<logger name="org.hibernate" level="WARN" />
 
 	<logger name="org.springframework" level="WARN" />
@@ -28,7 +20,6 @@
 
 	<root level="INFO">
 		<appender-ref ref="STDOUT" />
-		<appender-ref ref="FILE" />
 	</root>
 
 </configuration>
