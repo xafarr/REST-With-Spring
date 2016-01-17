@@ -6,20 +6,11 @@ import org.springframework.stereotype.Component;
 @Component
 public final class WebProperties {
 
-    @Value("${http.protocol}")
-    private String protocol;
-
-    @Value("${http.host}")
-    private String host;
-
-    @Value("${http.context}")
-    private String context;
+    @Value("${http.sec.path}")
+    private String path;
 
     @Value("${http.oauthPath}")
     private String oauthPath;
-
-    @Value("${http.port}")
-    private int port;
 
     public WebProperties() {
         super();
@@ -27,20 +18,8 @@ public final class WebProperties {
 
     // API
 
-    public final String getProtocol() {
-        return protocol;
-    }
-
-    public final String getHost() {
-        return host;
-    }
-
-    public final int getPort() {
-        return port;
-    }
-
-    public final String getContext() {
-        return context;
+    public final String getPath() {
+        return path;
     }
 
     public final String getOauthPath() {

@@ -1,10 +1,13 @@
-package org.baeldung.test.common.client.security;
+package org.baeldung.um.client.security;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.apache.commons.codec.binary.Base64;
-import org.baeldung.common.client.WebProperties;
+import org.baeldung.common.client.CommonPaths;
+import org.baeldung.test.common.client.security.ITestAuthenticator;
+import org.baeldung.test.common.client.security.TokenResponse;
+import org.baeldung.um.client.UmPaths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +32,10 @@ public class OAuthAuthenticator implements ITestAuthenticator {
     private static final String CLIENT_SECRET = "bGl2ZS10ZXN0";
 
     @Autowired
-    private WebProperties webProps;
+    private CommonPaths commonPaths;
+
+    @Autowired
+    private UmPaths umPaths;
 
     public OAuthAuthenticator() {
         super();
@@ -45,7 +51,7 @@ public class OAuthAuthenticator implements ITestAuthenticator {
 
     final String getAccessToken(final String username, final String password) {
         try {
-            final URI uri = new URI(webProps.getProtocol(), null, webProps.getHost(), webProps.getPort(), webProps.getContext() + webProps.getOauthPath(), null, null);
+            final URI uri = new URI(commonPaths.getProtocol(), null, commonPaths.getHost(), commonPaths.getPort(), umPaths.getPath() + umPaths.getOauthPath(), null, null);
             final String url = uri.toString();
             final String encodedCredentials = new String(Base64.encodeBase64((CLIENT_ID + ":" + CLIENT_SECRET).getBytes()));
 
