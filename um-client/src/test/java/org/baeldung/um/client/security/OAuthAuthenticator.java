@@ -11,6 +11,7 @@ import org.baeldung.um.client.UmPaths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -25,6 +26,7 @@ import com.jayway.restassured.authentication.OAuthSignature;
 import com.jayway.restassured.specification.RequestSpecification;
 
 @Component
+@Profile("client")
 public class OAuthAuthenticator implements ITestAuthenticator {
     private Logger log = LoggerFactory.getLogger(getClass());
 
