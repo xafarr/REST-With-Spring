@@ -1,9 +1,6 @@
 package org.baeldung.um.common;
 
-import org.baeldung.um.spring.UmContextConfig;
-import org.baeldung.um.spring.UmPersistenceJpaConfig;
-import org.baeldung.um.spring.UmServiceConfig;
-import org.baeldung.um.spring.UmWebConfig;
+import org.baeldung.um.run.UmApp;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -12,16 +9,10 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { // @formatter:off
-        UmContextConfig.class,
-
-        UmPersistenceJpaConfig.class,
-
-        UmServiceConfig.class,
-
-        UmWebConfig.class,
+        UmApp.class,
 })// @formatter:on
 @WebAppConfiguration
-public class WebSpringIntegrationTest {
+public class FullSpringIntegrationTest {
 
     @Test
     public final void whenContextIsBootstrapped_thenOk() {

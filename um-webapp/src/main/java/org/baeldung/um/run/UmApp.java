@@ -19,8 +19,11 @@ import org.springframework.context.annotation.Import;
 }) // @formatter:on
 @Import({ // @formatter:off
     UmContextConfig.class,
+
     UmPersistenceJpaConfig.class,
+
     UmServiceConfig.class,
+
     UmWebConfig.class,
     UmServletConfig.class,
     UmJavaSecurityConfig.class
