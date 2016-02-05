@@ -32,7 +32,9 @@ public class UmJavaSecurityConfig extends WebSecurityConfigurerAdapter {
         // @formatter:off
         http.
         authorizeRequests().
-        antMatchers("/api/**").authenticated().
+        // antMatchers("/api/**"). // if you want a more explicit mapping here
+        anyRequest().
+        authenticated().
         and().
         httpBasic().and().
         sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().
