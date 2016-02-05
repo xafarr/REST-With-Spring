@@ -33,7 +33,7 @@ public final class RoleSimpleApiClientNoBase {
     protected UmPaths paths;
 
     @Autowired
-    protected IMarshaller marshaller;
+    private IMarshaller marshaller;
 
     private final Class<Role> clazz = Role.class;
 
@@ -133,11 +133,27 @@ public final class RoleSimpleApiClientNoBase {
         return findOneByUri(locationOfCreatedResource);
     }
 
+    public final Role create(final String resourceAsString) {
+        final Response response = createAsResponse(resourceAsString);
+        Preconditions.checkState(response.getStatusCode() == 201, "create operation: " + response.getStatusCode());
+
+        final String locationOfCreatedResource = response.getHeader(HttpHeaders.LOCATION);
+        Preconditions.checkNotNull(locationOfCreatedResource);
+        return findOneByUri(locationOfCreatedResource);
+    }
+
     public final Response createAsResponse(final Role resource) {
         Preconditions.checkNotNull(resource);
         final RequestSpecification givenAuthenticated = givenAuthenticated();
 
         return givenAuthenticated.contentType(JSON).body(resource).post(getUri());
+    }
+
+    public final Response createAsResponse(final String resourceAsString) {
+        Preconditions.checkNotNull(resourceAsString);
+        final RequestSpecification givenAuthenticated = givenAuthenticated();
+
+        return givenAuthenticated.contentType(JSON).body(resourceAsString).post(getUri());
     }
 
     // update
@@ -191,6 +207,10 @@ public final class RoleSimpleApiClientNoBase {
 
     private final Pair<String, String> getDefaultCredentials() {
         return new ImmutablePair<String, String>(Um.ADMIN_EMAIL, Um.ADMIN_PASS);
+    }
+
+    public final IMarshaller getMarshaller() {
+        return marshaller;
     }
 
 }
