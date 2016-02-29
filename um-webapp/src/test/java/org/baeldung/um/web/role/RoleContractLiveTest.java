@@ -26,6 +26,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Sets;
 import com.google.common.io.CharStreams;
 import com.jayway.restassured.response.Response;
@@ -71,9 +75,10 @@ public class RoleContractLiveTest {
     }
 
     private final String createNewResource() throws IOException {
-        final InputStream stream = getClass().getResourceAsStream("/data/role_v1.json");
-        final String roleData = CharStreams.toString(new InputStreamReader(stream));
-        return roleData;
+        final InputStream stream = getClass().getResourceAsStream("/data/role_json_01.json");
+        final JsonNode rootNode = new ObjectMapper().readTree(stream);
+        ((ObjectNode) rootNode).set("name", JsonNodeFactory.instance.textNode(randomAlphabetic(8)));
+        return rootNode.toString();
     }
 
     private final String createNewResource3() throws IOException {
