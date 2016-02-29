@@ -14,16 +14,18 @@ import org.springframework.stereotype.Service;
 @Service
 class ActuatorMetricService implements IActuatorMetricService {
 
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
     @Autowired
     private MetricReaderPublicMetrics publicMetrics;
 
-    private final List<ArrayList<Integer>> statusMetric;
+    private final List<List<Integer>> statusMetricsByMinute;
     private final List<String> statusList;
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     public ActuatorMetricService() {
         super();
-        statusMetric = new ArrayList<ArrayList<Integer>>();
+
+        statusMetricsByMinute = new ArrayList<List<Integer>>();
         statusList = new ArrayList<String>();
     }
 
@@ -31,30 +33,31 @@ class ActuatorMetricService implements IActuatorMetricService {
 
     @Override
     public Object[][] getGraphData() {
-        final Date current = new Date();
         final int colCount = statusList.size() + 1;
-        final int rowCount = statusMetric.size() + 1;
+        final int rowCount = statusMetricsByMinute.size() + 1;
         final Object[][] result = new Object[rowCount][colCount];
+
+        final Date current = new Date();
         result[0][0] = "Time";
         int j = 1;
-        for (final String status : statusList) {
-            result[0][j] = status;
+        for (final String httpStatus : statusList) {
+            result[0][j] = httpStatus;
             j++;
         }
 
-        List<Integer> temp;
+        List<Integer> minuteOfStatuses;
         List<Integer> last = new ArrayList<Integer>();
         for (int i = 1; i < rowCount; i++) {
-            temp = statusMetric.get(i - 1);
+            minuteOfStatuses = statusMetricsByMinute.get(i - 1);
             result[i][0] = dateFormat.format(new Date(current.getTime() - (60000 * (rowCount - i))));
-            for (j = 1; j <= temp.size(); j++) {
-                result[i][j] = temp.get(j - 1) - (last.size() >= j ? last.get(j - 1) : 0);
+            for (j = 1; j <= minuteOfStatuses.size(); j++) {
+                result[i][j] = minuteOfStatuses.get(j - 1) - (last.size() >= j ? last.get(j - 1) : 0);
             }
             while (j < colCount) {
                 result[i][j] = 0;
                 j++;
             }
-            last = temp;
+            last = minuteOfStatuses;
         }
         return result;
     }
@@ -63,12 +66,12 @@ class ActuatorMetricService implements IActuatorMetricService {
 
     @Scheduled(fixedDelay = 60000)
     private void exportMetrics() {
-        final ArrayList<Integer> statusCount = new ArrayList<Integer>();
+        final List<Integer> lastMinuteStatuses = new ArrayList<Integer>();
 
-        updateStatuses(statusCount);
-        updateMetrics(statusCount);
+        initializeStatuses(lastMinuteStatuses);
+        updateMetrics(lastMinuteStatuses);
 
-        statusMetric.add(statusCount);
+        statusMetricsByMinute.add(lastMinuteStatuses);
     }
 
     private final void updateMetrics(final List<Integer> statusCount) {
@@ -90,7 +93,7 @@ class ActuatorMetricService implements IActuatorMetricService {
         }
     }
 
-    private final void updateStatuses(final List<Integer> statusCount) {
+    private final void initializeStatuses(final List<Integer> statusCount) {
         for (int i = 0; i < statusList.size(); i++) {
             statusCount.add(0);
         }
