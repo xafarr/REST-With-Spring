@@ -20,7 +20,6 @@ import org.baeldung.um.persistence.model.Role;
 import org.baeldung.um.spring.CommonTestConfig;
 import org.baeldung.um.spring.UmClientConfig;
 import org.baeldung.um.spring.UmLiveTestConfig;
-import org.baeldung.um.util.Um;
 import org.hamcrest.core.StringContains;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,7 +32,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import com.google.common.collect.Sets;
-import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
 import com.jayway.restassured.specification.RequestSpecification;
 
@@ -383,7 +381,7 @@ public class RoleSimpleLiveTest {
     }
 
     private final RequestSpecification givenAuthenticated() {
-        return RestAssured.given().auth().preemptive().basic(Um.ADMIN_EMAIL, Um.ADMIN_PASS);
+        return getApi().givenAuthenticated();
     }
 
     private final Privilege createNewAssociationResource() {

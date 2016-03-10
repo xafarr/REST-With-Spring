@@ -9,6 +9,7 @@ import org.baeldung.client.marshall.IMarshaller;
 import org.baeldung.common.spring.util.Profiles;
 import org.baeldung.common.util.QueryConstants;
 import org.baeldung.common.web.WebConstants;
+import org.baeldung.test.common.client.security.ITestAuthenticator;
 import org.baeldung.um.client.UmPaths;
 import org.baeldung.um.persistence.model.Role;
 import org.baeldung.um.util.Um;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Component;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
 import com.jayway.restassured.specification.RequestSpecification;
 
@@ -34,6 +34,9 @@ public final class RoleSimpleApiClient {
 
     @Autowired
     protected IMarshaller marshaller;
+
+    @Autowired
+    private ITestAuthenticator auth;
 
     private final Class<Role> clazz = Role.class;
 
@@ -172,7 +175,7 @@ public final class RoleSimpleApiClient {
 
     public final RequestSpecification givenAuthenticated() {
         final Pair<String, String> credentials = getDefaultCredentials();
-        return RestAssured.given().auth().preemptive().basic(credentials.getLeft(), credentials.getRight());
+        return auth.givenAuthenticated(credentials.getLeft(), credentials.getRight());
     }
 
     public final Response read(final String uriOfResource) {
