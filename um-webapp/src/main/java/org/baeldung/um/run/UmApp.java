@@ -1,5 +1,6 @@
 package org.baeldung.um.run;
 
+import org.baeldung.um.persistence.setup.MyApplicationContextInitializer;
 import org.baeldung.um.spring.UmContextConfig;
 import org.baeldung.um.spring.UmPersistenceJpaConfig;
 import org.baeldung.um.spring.UmServiceConfig;
@@ -13,16 +14,24 @@ import org.springframework.boot.context.web.SpringBootServletInitializer;
 
 @SpringBootApplication(exclude = { // @formatter:off
         ErrorMvcAutoConfiguration.class
-}) // @formatter:on
+})// @formatter:on
 public class UmApp extends SpringBootServletInitializer {
 
-    private final static Object[] CONFIGS = { UmContextConfig.class, UmPersistenceJpaConfig.class, UmServiceConfig.class, UmWebConfig.class, UmServletConfig.class };
+    private final static Object[] CONFIGS = { // @formatter:off
+            UmContextConfig.class,
+            UmPersistenceJpaConfig.class,
+            UmServiceConfig.class,
+            UmWebConfig.class,
+            UmServletConfig.class,
+
+            UmApp.class
+    }; // @formatter:on
 
     //
 
     @Override
     protected SpringApplicationBuilder configure(final SpringApplicationBuilder application) {
-        return application.sources(CONFIGS);
+        return application.sources(CONFIGS).initializers(new MyApplicationContextInitializer());
     }
 
     public static void main(final String... args) {
