@@ -1,9 +1,13 @@
-package org.baeldung.um.spring;
+package org.baeldung.um.run;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.baeldung.um.persistence.setup.MyApplicationContextInitializer;
+import org.baeldung.um.spring.UmContextConfig;
+import org.baeldung.um.spring.UmPersistenceJpaConfig;
+import org.baeldung.um.spring.UmServiceConfig;
+import org.baeldung.um.spring.UmWebConfig;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.embedded.ServletRegistrationBean;
