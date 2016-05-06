@@ -206,13 +206,6 @@
 			<artifactId>hsqldb</artifactId>
 		</dependency>
 
-		<!-- persistence - JPA 2 metamodel -->
-
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-jpamodelgen</artifactId>
-		</dependency>
-
 		<!-- logging -->
 
 		<dependency>
