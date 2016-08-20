@@ -155,6 +155,8 @@
 
 		<module>um-client</module>
 		<module>um-webapp</module>
+		
+		<module>um-ui</module>
 
 	</modules>
 
