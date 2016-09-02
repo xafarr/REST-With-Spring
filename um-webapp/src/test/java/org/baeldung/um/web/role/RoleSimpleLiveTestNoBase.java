@@ -10,6 +10,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.Collection;
+
 import org.apache.http.HttpHeaders;
 import org.baeldung.common.util.SearchField;
 import org.baeldung.common.web.WebConstants;
@@ -189,7 +191,7 @@ public class RoleSimpleLiveTestNoBase {
     @Test
     public final void whenResourceIsCreatedWithNewAssociation_then409IsReceived() {
         final Role newResource = createNewResource();
-        newResource.getPrivileges().add(createNewAssociationResource());
+        getAssociations(newResource).add(createNewAssociationResource());
 
         // When
         final Response response = getApi().createAsResponse(newResource);
@@ -203,7 +205,7 @@ public class RoleSimpleLiveTestNoBase {
         final Privilege invalidAssociation = createNewAssociationResource();
         invalidAssociation.setName(null);
         final Role newResource = createNewResource();
-        newResource.getPrivileges().add(invalidAssociation);
+        getAssociations(newResource).add(invalidAssociation);
 
         // When
         final Response response = getApi().createAsResponse(newResource);
@@ -375,6 +377,10 @@ public class RoleSimpleLiveTestNoBase {
 
     private final Privilege createNewAssociationResource() {
         return new Privilege(randomAlphabetic(8));
+    }
+
+    private Collection<Privilege> getAssociations(Role resource) {
+        return resource.getPrivileges();
     }
 
     private final Role createNewResource() {

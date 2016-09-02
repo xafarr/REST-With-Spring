@@ -10,12 +10,16 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.Collection;
+
 import org.apache.http.HttpHeaders;
+import org.baeldung.common.interfaces.IDto;
 import org.baeldung.common.interfaces.INameableDto;
 import org.baeldung.common.util.SearchField;
 import org.baeldung.common.web.WebConstants;
 import org.baeldung.test.common.util.IDUtil;
 import org.baeldung.um.client.template.GenericSimpleApiClient;
+import org.baeldung.um.persistence.model.Privilege;
 import org.baeldung.um.spring.CommonTestConfig;
 import org.baeldung.um.spring.UmClientConfig;
 import org.baeldung.um.spring.UmLiveTestConfig;
@@ -268,6 +272,32 @@ public abstract class GenericSimpleLiveTest<T extends INameableDto> {
         assertThat(response.getStatusCode(), is(404));
     }
 
+    @Test
+    public final void whenResourceIsCreatedWithNewAssociation_then409IsReceived() {
+        final T newResource = createNewResource();
+        getAssociations(newResource).add(createNewAssociationResource());
+
+        // When
+        final Response response = getApi().createAsResponse(newResource);
+
+        // Then
+        assertThat(response.getStatusCode(), is(409));
+    }
+
+    @Test
+    public final void whenResourceIsCreatedWithInvalidAssociation_then409IsReceived() {
+        final Privilege invalidAssociation = createNewAssociationResource();
+        invalidAssociation.setName(null);
+        final T newResource = createNewResource();
+        getAssociations(newResource).add(invalidAssociation);
+
+        // When
+        final Response response = getApi().createAsResponse(newResource);
+
+        // Then
+        assertThat(response.getStatusCode(), is(409));
+    }
+
     // delete
 
     @Test
@@ -340,5 +370,9 @@ public abstract class GenericSimpleLiveTest<T extends INameableDto> {
     protected abstract GenericSimpleApiClient<T> getApi();
 
     protected abstract T createNewResource();
+
+    protected abstract <A extends IDto> Collection<A> getAssociations(T resource);
+
+    protected abstract <A extends IDto> A createNewAssociationResource();
 
 }
